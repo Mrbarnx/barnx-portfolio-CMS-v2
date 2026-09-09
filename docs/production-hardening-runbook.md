@@ -11,6 +11,8 @@ Run `supabase/migrations/202609070001_final_security_hardening.sql` once in the 
 - restricts media writes to the signed-in admin's folder and approved image extensions;
 - validates media type, size, path and accessibility metadata.
 
+Then run `supabase/migrations/202609090001_analytics_retention.sql` once. It immediately removes anonymous analytics events older than 90 days, then repeats that cleanup automatically (at most once per day when a new event arrives). This avoids needing an external or paid scheduler.
+
 ## 2. Lock down Supabase Auth
 
 In Supabase Dashboard → Authentication:
@@ -55,6 +57,6 @@ After changing a variable, redeploy. Set `NEXT_PUBLIC_SITE_URL` to the custom pr
 
 - Review Vercel deployment/runtime logs after releases.
 - Review Supabase Auth users and the CMS allowlist monthly.
-- Remove unused media and stale drafts periodically.
+- Remove unused media and stale drafts periodically. Analytics events are automatically limited to 90 days.
 - Export CMS data before large content or schema changes.
 - Rotate the admin password immediately if account access is suspected.
