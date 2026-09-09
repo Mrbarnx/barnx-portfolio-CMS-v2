@@ -6,7 +6,9 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Bot, Code2, Layers3, Rocket, Sparkles, Zap } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
-import { experience, type Project } from '@/data/content';
+import { type Project } from '@/data/content';
+import type { ProfessionalContent } from '@/data/professional';
+import { publishedByOrder } from '@/lib/cms/publicProfessional';
 import { ImpactTeaser } from '@/components/ImpactTeaser';
 import type { PublicSiteSettings } from '@/data/site';
 
@@ -43,7 +45,9 @@ function TechIcon({ card }: { card: (typeof techCards)[number] }) {
   return <Code2 aria-hidden="true" />;
 }
 
-export function HomeClient({ projects, settings }: { projects: Project[]; settings: PublicSiteSettings }) {
+export function HomeClient({ projects, settings, professional }: { projects: Project[]; settings: PublicSiteSettings; professional: ProfessionalContent }) {
+  const publicCapabilities = publishedByOrder(professional.capabilities);
+  const publicExperience = publishedByOrder(professional.experience);
   const about = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -143,11 +147,7 @@ export function HomeClient({ projects, settings }: { projects: Project[]; settin
 
     <section className="capabilitiesTeaser">
       <div className="sectionHead"><div><span className="eyebrow">CAPABILITIES</span><h2>What I can help build.</h2><p>Technical skills connected to practical product work—not a disconnected wall of logos.</p></div><Link className="button" href="/capabilities">Explore skills & services <ArrowRight/></Link></div>
-      <div className="capabilityPreviewGrid">
-        <article><Code2/><span>01</span><h3>Product interfaces</h3><p>Responsive, accessible frontend experiences built around real user flows.</p></article>
-        <article><Layers3/><span>02</span><h3>Full-stack systems</h3><p>Applications connecting polished interfaces to APIs, data and admin workflows.</p></article>
-        <article><Bot/><span>03</span><h3>AI & automation</h3><p>Focused integrations and workflows that remove repetitive work and preserve context.</p></article>
-      </div>
+      <div className="capabilityPreviewGrid">{publicCapabilities.slice(0,3).map((item,index)=>{const Icon=[Code2,Layers3,Bot][index]??Code2;return <article key={item.title}><Icon/><span>{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.summary}</p></article>})}</div>
     </section>
 
     <ImpactTeaser/>
@@ -161,7 +161,7 @@ export function HomeClient({ projects, settings }: { projects: Project[]; settin
     </section>
 
     <section className="featured"><div className="sectionHead"><div><span className="eyebrow">FEATURED WORK</span><h2>Selected Projects</h2><p>Real builds showing software engineering, product thinking, AI integration and automation capability.</p></div><Link className="button" href="/projects">View all projects <ArrowRight/></Link></div><div className="projectGrid">{projects.slice(0,3).map(p=><Link className="projectCard" href={`/projects/${p.slug}`} key={p.slug}><div className={`projectVisual ${p.tone}${p.coverImage?' hasCover':''}`}><div className="browser"><i/><i/><i/></div>{p.coverImage?<img className="projectCoverImage" src={p.coverImage.url} alt={p.coverImage.alt}/>:<><strong>{p.display}</strong><small>{p.visualSubtitle}</small></>}</div><div className="projectBody"><span>{p.category} · {p.status}</span><h3>{p.title}</h3><p>{p.short}</p><div className="tags">{p.tech.slice(0,4).map(t=><b key={t}>{t}</b>)}</div><em>Case study →</em></div></Link>)}</div></section>
-    <section className="experience"><div className="sectionHead"><div><span className="eyebrow">EXPERIENCE</span><h2>Professional progression.</h2><p>Selected roles, responsibilities and the work behind each chapter.</p></div><Link className="button" href="/experience">View full experience <ArrowRight/></Link></div>{experience.map(x=><Link className="experienceLink" href={`/experience#${x.company.toLowerCase().replaceAll(' ','-')}`} key={x.company}><time>{x.date}</time><div><h3>{x.role} · {x.company}</h3><p>{x.description}</p></div><ArrowRight/></Link>)}</section>
+    <section className="experience"><div className="sectionHead"><div><span className="eyebrow">EXPERIENCE</span><h2>Professional progression.</h2><p>Selected roles, responsibilities and the work behind each chapter.</p></div><Link className="button" href="/experience">View full experience <ArrowRight/></Link></div>{publicExperience.map(x=><Link className="experienceLink" href={`/experience#${x.company.toLowerCase().replaceAll(' ','-')}`} key={x.company}><time>{x.date}</time><div><h3>{x.role} · {x.company}</h3><p>{x.description}</p></div><ArrowRight/></Link>)}</section>
     <section className="focus"><div><span className="eyebrow light">CURRENT FOCUS</span><h2>Software engineering.<br/>AI and automation.</h2></div><div className="focusCards"><article><Code2/><h3>Strongest now</h3><p>Full-stack applications, product interfaces, backend systems, databases, APIs and dependable software delivery.</p></article><article><Zap/><h3>Growing deeper</h3><p>AI-powered applications, API integrations, workflow automation, n8n, cloud deployment and DevOps practices.</p></article></div></section>
     <Newsletter/>
 
