@@ -1,0 +1,27 @@
+export type PublishedItem={published:boolean;sortOrder:number};
+export type Capability=PublishedItem&{label:string;title:string;summary:string};
+export type SkillGroup=PublishedItem&{title:string;skills:string[]};
+export type Service=PublishedItem&{number:string;title:string;summary:string};
+export type ExperienceEntry=PublishedItem&{slug:string;date:string;role:string;company:string;lead:string;contributions:string[];practices:string[];evidence:string;boundary:string};
+export type ProfessionalContent={capabilities:Capability[];skillGroups:SkillGroup[];services:Service[];experience:ExperienceEntry[]};
+
+export const defaultProfessionalContent:ProfessionalContent={
+capabilities:[
+{published:true,sortOrder:0,label:'01 · SOFTWARE ENGINEERING',title:'Full-stack software systems',summary:'Maintainable applications connecting product interfaces, backend services, databases, APIs and operational workflows.'},
+{published:true,sortOrder:1,label:'02 · PRODUCT ENGINEERING',title:'Useful digital products',summary:'Responsive product experiences shaped around real user flows, clear state and dependable delivery.'},
+{published:true,sortOrder:2,label:'03 · AI ENGINEERING',title:'AI-powered applications',summary:'Focused AI capabilities designed around clear workflows, observable behavior and appropriate human handoff.'},
+{published:true,sortOrder:3,label:'04 · AUTOMATION',title:'Workflow systems',summary:'Lead, support and internal-operation workflows that reduce repetitive work and keep information moving.'}],
+skillGroups:[
+{published:true,sortOrder:0,title:'Frontend',skills:['React','Vue 3','Next.js','TypeScript','JavaScript','Tailwind CSS','SCSS','Responsive UI','Accessibility']},
+{published:true,sortOrder:1,title:'Backend & data',skills:['Node.js','Express','REST APIs','PostgreSQL','Supabase','Prisma','Authentication','Storage']},
+{published:true,sortOrder:2,title:'Delivery & operations',skills:['Git','GitHub','Vercel','Docker','API integration','Component architecture','Testing workflows','DevOps foundations']},
+{published:true,sortOrder:3,title:'AI & automation',skills:['AI API integration','Prompt engineering','n8n','Webhooks','Workflow design','Human handoff patterns']}],
+services:[
+{published:true,sortOrder:0,number:'01',title:'Custom business software',summary:'Build dashboards, portals, admin systems, internal tools and SaaS applications around real operational needs.'},
+{published:true,sortOrder:1,number:'02',title:'Business workflow automation',summary:'Automate lead processing, follow-ups, notifications, approvals, reporting and repetitive administrative work.'},
+{published:true,sortOrder:2,number:'03',title:'AI-powered applications & workflows',summary:'Add focused AI assistants, qualification, support and document-processing capabilities where they create practical value.'},
+{published:true,sortOrder:3,number:'04',title:'API & systems integration',summary:'Connect websites, databases, payments, communication platforms, AI services and business tools into dependable workflows.'}],
+experience:[
+{published:true,sortOrder:0,slug:'imisi-health',date:'APR 2026 — PRESENT',role:'Frontend Engineer',company:'Imisi Health',lead:'Building dependable product interfaces and API-driven workflows for digital healthcare products in a professional engineering team.',contributions:['Built responsive interfaces across healthcare product flows','Created and improved reusable frontend components','Integrated application interfaces with backend APIs','Contributed code-quality and product-experience improvements'],practices:['Responsive UI engineering','Component architecture','API-driven state','Team-based product delivery'],evidence:'42 healthcare screens represented in the portfolio summary',boundary:'Company work presented without exposing private product information'},
+{published:true,sortOrder:1,slug:'synlo',date:'NOV 2025 — FEB 2026',role:'Lead Frontend Developer & UI/UX Designer',company:'Synlo',lead:'Led frontend implementation and interface design for a SocialFi product spanning discovery, matchmaking and AI-assisted interactions.',contributions:['Translated product ideas into structured interface flows','Designed and implemented responsive application screens','Maintained consistency across a multi-screen product experience','Connected product thinking, UI design and frontend delivery'],practices:['Frontend leadership','UI/UX design','Design-to-code execution','Responsive product systems'],evidence:'21 SocialFi screens designed and coded',boundary:'Role scope and verified output stated without fabricated performance metrics'},
+{published:true,sortOrder:2,slug:'vin-startup-project',date:'NOV 2024 — JAN 2025',role:'Full-Stack Engineer',company:'VIN Startup Project',lead:'Built multimodal AI interfaces and the supporting application layer for an early-stage product initiative.',contributions:['Developed interfaces for multimodal AI interactions','Built Node.js and Express REST API workflows','Connected frontend behavior to server-side services','Worked with serverless product architecture'],practices:['Full-stack development','REST API design','AI interface integration','Serverless workflows'],evidence:'Technical scope documented through portfolio experience',boundary:'No unverified adoption or business-impact claims'}]};
