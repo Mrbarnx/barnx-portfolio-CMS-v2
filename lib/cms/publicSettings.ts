@@ -6,7 +6,7 @@ import { site, type PublicSiteSettings } from '@/data/site';
 import { getSupabaseConfig, hasSupabaseConfig } from '@/lib/supabase/config';
 
 export const defaultSiteSettings: PublicSiteSettings = {
-  headline: 'Frontend-Focused Full-Stack Engineer building modern web applications while integrating AI-powered features and intelligent automations.',
+  headline: 'Software Engineer building full-stack applications, AI-powered systems, API integrations and business automation.',
   availability: 'Available for new opportunities',
   email: site.email,
   github: site.github,
