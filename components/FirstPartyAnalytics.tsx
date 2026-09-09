@@ -4,21 +4,37 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 const uuid = () => crypto.randomUUID();
+const sessionTimeoutMs = 30 * 60 * 1000;
+
+function persistentId(key: string) {
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+  const created = uuid();
+  localStorage.setItem(key, created);
+  return created;
+}
+
+function activeSessionId() {
+  const now = Date.now();
+  const previousId = localStorage.getItem('barnx_session');
+  const lastActive = Number(localStorage.getItem('barnx_session_last_active') ?? 0);
+  const sessionId = previousId && now - lastActive < sessionTimeoutMs ? previousId : uuid();
+  localStorage.setItem('barnx_session', sessionId);
+  localStorage.setItem('barnx_session_last_active', String(now));
+  return sessionId;
+}
 
 export function FirstPartyAnalytics() {
   const pathname = usePathname();
 
   useEffect(() => {
     if (navigator.doNotTrack === '1' || pathname.startsWith('/admin')) return;
-    const visitorId = sessionStorage.getItem('barnx_visitor') || uuid();
-    const sessionId = sessionStorage.getItem('barnx_session') || uuid();
-    sessionStorage.setItem('barnx_visitor', visitorId);
-    sessionStorage.setItem('barnx_session', sessionId);
+    const visitorId = persistentId('barnx_visitor');
     let referrerHost = '';
     try { referrerHost = document.referrer ? new URL(document.referrer).hostname : ''; } catch { referrerHost = ''; }
     const send = (eventName: string, target?: string) => fetch('/api/analytics', {
       method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true,
-      body: JSON.stringify({ visitorId, sessionId, eventName, pathname, target, referrerHost }),
+      body: JSON.stringify({ visitorId, sessionId: activeSessionId(), eventName, pathname, target, referrerHost }),
     }).catch(() => undefined);
     send(pathname.startsWith('/projects/') ? 'project_open' : pathname.startsWith('/barnx-studio/') ? 'resource_open' : 'page_view');
 
