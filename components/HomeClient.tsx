@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
 import { type Project } from '@/data/content';
 import type { ProfessionalContent } from '@/data/professional';
-import { publishedByOrder } from '@/lib/cms/publicProfessional';
 import { ImpactTeaser } from '@/components/ImpactTeaser';
 import type { PublicSiteSettings } from '@/data/site';
 
@@ -46,8 +45,8 @@ function TechIcon({ card }: { card: (typeof techCards)[number] }) {
 }
 
 export function HomeClient({ projects, settings, professional }: { projects: Project[]; settings: PublicSiteSettings; professional: ProfessionalContent }) {
-  const publicCapabilities = publishedByOrder(professional.capabilities);
-  const publicExperience = publishedByOrder(professional.experience);
+  const publicCapabilities = professional.capabilities.filter(item=>item.published).sort((a,b)=>a.sortOrder-b.sortOrder);
+  const publicExperience = professional.experience.filter(item=>item.published).sort((a,b)=>a.sortOrder-b.sortOrder);
   const about = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
