@@ -18,6 +18,13 @@ function deviceType(userAgent: string) {
 
 export async function POST(request: NextRequest) {
   if (!hasSupabaseConfig()) return new NextResponse(null, { status: 204 });
+  const contentLength = Number(request.headers.get('content-length') ?? 0);
+  if (contentLength > 4096) return NextResponse.json({ error: 'Request too large.' }, { status: 413 });
+
+  const origin = request.headers.get('origin');
+  const requestOrigin = request.nextUrl.origin;
+  if (origin && origin !== requestOrigin) return NextResponse.json({ error: 'Origin not allowed.' }, { status: 403 });
+
   const parsed = eventSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: 'Invalid event.' }, { status: 400 });
   const { url, anonKey } = getSupabaseConfig();

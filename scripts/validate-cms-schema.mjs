@@ -27,6 +27,8 @@ const analyticsPath = new URL('../supabase/migrations/202609040004_cms_analytics
 const analyticsSql = readFileSync(analyticsPath, 'utf8');
 const studioCategoriesPath = new URL('../supabase/migrations/202609050001_studio_categories.sql', import.meta.url);
 const studioCategoriesSql = readFileSync(studioCategoriesPath, 'utf8');
+const hardeningPath = new URL('../supabase/migrations/202609070001_final_security_hardening.sql', import.meta.url);
+const hardeningSql = readFileSync(hardeningPath, 'utf8');
 
 const tables = [
   'cms_admin_users',
@@ -144,4 +146,14 @@ assert.doesNotMatch(
   'Anonymous users must never receive Studio category mutation privileges.',
 );
 
-console.log(`CMS schema, API permissions, media storage, private demos, Studio categories and phases 6-9 validation passed for ${tables.length} foundation tables.`);
+assert.match(hardeningSql, /^-- Barnx CMS final security and production hardening/m);
+assert.match(hardeningSql, /\bbegin;[\s\S]*\bcommit;\s*$/);
+assert.match(hardeningSql, /media_assets_safe_metadata_check/);
+assert.match(hardeningSql, /storage\.foldername\(name\)/);
+assert.match(hardeningSql, /lower\(storage\.extension\(name\)\)/);
+assert.match(hardeningSql, /pg_advisory_xact_lock/);
+assert.match(hardeningSql, /interval '1 hour'/);
+assert.match(hardeningSql, />= 120/);
+assert.doesNotMatch(hardeningSql, /\b(ip|ip_address|email|full_name)\b/i, 'Hardening must not add direct personal identifiers.');
+
+console.log(`CMS schema, permissions, storage, analytics limits and final hardening validation passed for ${tables.length} foundation tables.`);

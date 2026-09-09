@@ -100,8 +100,8 @@ export function MediaUploadForm() {
     <form className={styles.uploadForm} onSubmit={upload} ref={formRef}>
       <div className={styles.uploadHeading}><ImagePlus /><div><h2>Upload image</h2><p>JPG, PNG, WebP, AVIF or GIF · maximum 8 MB</p></div></div>
       <label>Image file<input name="file" type="file" accept={acceptedImageTypes.join(',')} required /></label>
-      <label>Alt text<input name="alt_text" placeholder="Describe what the image shows" required /></label>
-      <label>Caption <span>optional</span><input name="caption" placeholder="Internal or public context" /></label>
+      <label>Alt text<input name="alt_text" placeholder="Describe what the image shows" minLength={3} maxLength={300} required /></label>
+      <label>Caption <span>optional</span><input name="caption" placeholder="Internal or public context" maxLength={500} /></label>
       <div className={styles.publicNotice}><strong>Public portfolio image</strong><small>Anyone with the image URL can view it. Do not upload private or sensitive files.</small></div>
       {message ? <p className={styles.uploadMessage} role="status">{message}</p> : null}
       <button className={styles.uploadButton} type="submit" disabled={pending}>{pending ? 'Uploading…' : 'Upload image'}</button>
