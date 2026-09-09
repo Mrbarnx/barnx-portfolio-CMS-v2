@@ -1,25 +1,31 @@
 import Link from 'next/link';
-import {requireCmsAdmin} from '@/lib/admin/requireCmsAdmin';
-import {defaultProfessionalContent,type Capability,type SkillGroup,type Service,type ExperienceEntry} from '@/data/professional';
-import {saveProfessionalContent} from './actions';
+import { defaultProfessionalContent } from '@/data/professional';
+import { requireCmsAdmin } from '@/lib/admin/requireCmsAdmin';
+import { normalizeProfessionalContent } from '@/lib/cms/professionalSchema';
+import { PROFESSIONAL_DRAFT_KEY, PROFESSIONAL_PUBLISHED_KEY } from '@/lib/cms/publicProfessional';
+import { ProfessionalEditor } from './ProfessionalEditor';
 import styles from '../content.module.css';
-export const dynamic='force-dynamic';
-const pad=<T,>(items:T[],count:number,empty:T)=>[...items,...Array.from({length:Math.max(0,count-items.length)},()=>({...empty}))];
-export default async function ProfessionalAdmin({searchParams}:{searchParams:Promise<{saved?:string;error?:string}>}){
- const{supabase}=await requireCmsAdmin();const{data}=await supabase.from('site_settings').select('value').eq('key','site.professional-content').maybeSingle();
- const stored=(data?.value&&typeof data.value==='object'?data.value:{}) as Partial<typeof defaultProfessionalContent>;
- const content={capabilities:stored.capabilities??defaultProfessionalContent.capabilities,skillGroups:stored.skillGroups??defaultProfessionalContent.skillGroups,services:stored.services??defaultProfessionalContent.services,experience:stored.experience??defaultProfessionalContent.experience};
- const caps=pad<Capability>(content.capabilities,6,{label:'',title:'',summary:'',published:false,sortOrder:99});
- const skills=pad<SkillGroup>(content.skillGroups,6,{title:'',skills:[],published:false,sortOrder:99});
- const services=pad<Service>(content.services,6,{number:'',title:'',summary:'',published:false,sortOrder:99});
- const experience=pad<ExperienceEntry>(content.experience,8,{slug:'',date:'',role:'',company:'',lead:'',contributions:[],practices:[],evidence:'',boundary:'',published:false,sortOrder:99});
- const query=await searchParams;
- return <main className={styles.page}><div className={styles.wrap}><Link className={styles.back} href="/admin">← Admin home</Link><header className={styles.header}><div><p className={styles.eyebrow}>Professional content</p><h1>Capabilities & Experience</h1><p>Edit, add, reorder or unpublish the skills, offers and roles shown publicly.</p></div></header>
- {query.saved==='true'?<p className={styles.notice}>Professional content saved and published pages refreshed.</p>:null}{query.saved==='failed'||query.error?<p className={styles.error}>Nothing was saved. Check the required fields and try again.</p>:null}
- <form className={styles.form} action={saveProfessionalContent}>
- <section className={styles.section}><h2>Capabilities</h2><p>Blank cards are available for adding new entries. Clear a card to remove it; uncheck Published to hide it.</p><div className={styles.stack}>{caps.map((x,i)=><fieldset className={styles.section} key={i}><legend>Capability {i+1}</legend><div className={styles.fields}><label>Label<input name={`cap_label_${i}`} defaultValue={x.label}/></label><label>Title<input name={`cap_title_${i}`} defaultValue={x.title}/></label><label>Order<input name={`cap_order_${i}`} type="number" min="0" defaultValue={x.sortOrder}/></label><label><input name={`cap_published_${i}`} type="checkbox" defaultChecked={x.published}/> Published</label></div><label>Summary<textarea name={`cap_summary_${i}`} rows={3} defaultValue={x.summary}/></label></fieldset>)}</div></section>
- <section className={styles.section}><h2>Skill groups</h2><div className={styles.stack}>{skills.map((x,i)=><fieldset className={styles.section} key={i}><legend>Skill group {i+1}</legend><div className={styles.fields}><label>Group title<input name={`skill_title_${i}`} defaultValue={x.title}/></label><label>Order<input name={`skill_order_${i}`} type="number" min="0" defaultValue={x.sortOrder}/></label><label><input name={`skill_published_${i}`} type="checkbox" defaultChecked={x.published}/> Published</label></div><label>Skills — one per line<textarea name={`skill_items_${i}`} rows={5} defaultValue={x.skills.join('\n')}/></label></fieldset>)}</div></section>
- <section className={styles.section}><h2>Freelance offers</h2><div className={styles.stack}>{services.map((x,i)=><fieldset className={styles.section} key={i}><legend>Offer {i+1}</legend><div className={styles.fields}><label>Number<input name={`service_number_${i}`} defaultValue={x.number}/></label><label>Title<input name={`service_title_${i}`} defaultValue={x.title}/></label><label>Order<input name={`service_order_${i}`} type="number" min="0" defaultValue={x.sortOrder}/></label><label><input name={`service_published_${i}`} type="checkbox" defaultChecked={x.published}/> Published</label></div><label>Problem and solution summary<textarea name={`service_summary_${i}`} rows={3} defaultValue={x.summary}/></label></fieldset>)}</div></section>
- <section className={styles.section}><h2>Experience</h2><div className={styles.stack}>{experience.map((x,i)=><fieldset className={styles.section} key={i}><legend>Experience {i+1}</legend><div className={styles.fields}><label>Slug<input name={`exp_slug_${i}`} placeholder="company-name" defaultValue={x.slug}/></label><label>Date<input name={`exp_date_${i}`} defaultValue={x.date}/></label><label>Role<input name={`exp_role_${i}`} defaultValue={x.role}/></label><label>Company<input name={`exp_company_${i}`} defaultValue={x.company}/></label><label>Order<input name={`exp_order_${i}`} type="number" min="0" defaultValue={x.sortOrder}/></label><label><input name={`exp_published_${i}`} type="checkbox" defaultChecked={x.published}/> Published</label></div><label>Role summary<textarea name={`exp_lead_${i}`} rows={3} defaultValue={x.lead}/></label><div className={styles.fields}><label>Contributions — one per line<textarea name={`exp_contributions_${i}`} rows={6} defaultValue={x.contributions.join('\n')}/></label><label>Engineering practices — one per line<textarea name={`exp_practices_${i}`} rows={6} defaultValue={x.practices.join('\n')}/></label></div><label>Evidence<input name={`exp_evidence_${i}`} defaultValue={x.evidence}/></label><label>Public boundary note<input name={`exp_boundary_${i}`} defaultValue={x.boundary}/></label></fieldset>)}</div></section>
- <div className={styles.formActions}><button className={styles.button}>Save professional content</button></div></form></div></main>;
+
+export const dynamic = 'force-dynamic';
+
+export default async function ProfessionalAdmin({ searchParams }: { searchParams: Promise<{ saved?: string; error?: string }> }) {
+  const { supabase } = await requireCmsAdmin();
+  const { data, error: readError } = await supabase
+    .from('site_settings')
+    .select('key,value,updated_at')
+    .in('key', [PROFESSIONAL_DRAFT_KEY, PROFESSIONAL_PUBLISHED_KEY]);
+  const draft = data?.find((row) => row.key === PROFESSIONAL_DRAFT_KEY);
+  const published = data?.find((row) => row.key === PROFESSIONAL_PUBLISHED_KEY);
+  const initialContent = normalizeProfessionalContent(draft?.value ?? published?.value ?? defaultProfessionalContent);
+  const query = await searchParams;
+
+  return <main className={styles.page}><div className={styles.wrap}>
+    <Link className={styles.back} href="/admin">← Admin home</Link>
+    <header className={styles.header}><div><p className={styles.eyebrow}>Professional content</p><h1>Positioning & proof</h1><p>Manage the professional identity, capabilities, four offers, proof and experience shown across the portfolio.</p></div></header>
+    {query.saved === 'draft' ? <p className={styles.notice}>Draft saved privately. The public portfolio was not changed.</p> : null}
+    {query.saved === 'published' ? <p className={styles.notice}>Professional content published and public pages refreshed.</p> : null}
+    {query.error || readError ? <p className={styles.error}>Nothing was changed. Check every required field and try again.</p> : null}
+    <p className={styles.guard}>Drafts are admin-only. Publish updates the public copy. Never enter passwords, private client information or secrets.</p>
+    <ProfessionalEditor initialContent={initialContent} />
+  </div></main>;
 }

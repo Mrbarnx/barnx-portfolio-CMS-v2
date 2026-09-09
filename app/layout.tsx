@@ -8,6 +8,7 @@ import { TechMarqueeEnhancer } from '@/components/TechMarqueeEnhancer';
 import { site } from '@/data/site';
 import { FirstPartyAnalytics } from '@/components/FirstPartyAnalytics';
 import { getPublicSiteSettings } from '@/lib/cms/publicSettings';
+import { getProfessionalContent } from '@/lib/cms/publicProfessional';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getPublicSiteSettings();
@@ -23,8 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: Readonly<{children: React.ReactNode}>) {
-  const settings = await getPublicSiteSettings();
-  const personSchema = { '@context': 'https://schema.org', '@type': 'Person', name: site.person, url: site.url, email: `mailto:${settings.email}`, jobTitle: 'Software Engineer | AI Engineering & Automation', sameAs: [settings.github, settings.linkedin, settings.x], knowsAbout: ['Software Engineering', 'Full-Stack Development', 'React', 'Vue.js', 'Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Docker', 'AI Engineering', 'API Integration', 'Business Automation'] };
+  const [settings, professional] = await Promise.all([getPublicSiteSettings(), getProfessionalContent()]);
+  const personSchema = { '@context': 'https://schema.org', '@type': 'Person', name: site.person, url: site.url, email: `mailto:${settings.email}`, jobTitle: professional.profile.title, description: professional.profile.positioningStatement, sameAs: [settings.github, settings.linkedin, settings.x], knowsAbout: ['Software Engineering', 'Full-Stack Development', 'React', 'Vue.js', 'Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Docker', 'AI Engineering', 'API Integration', 'Business Automation'] };
   return (
     <html lang="en">
       <body>

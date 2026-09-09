@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Barnx — Barnabas Mikel';
+export const alt = 'Barnabas Mikel — Software Engineer, AI Engineering and Automation';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -43,11 +43,11 @@ export default function OpenGraphImage() {
           <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, marginBottom: 24 }}>BUILD • AUTOMATE • SCALE</div>
           <div style={{ fontSize: 72, lineHeight: 1.02, fontWeight: 900, letterSpacing: -3 }}>Barnabas Mikel</div>
           <div style={{ fontSize: 31, lineHeight: 1.35, marginTop: 22, color: '#424242' }}>
-            Frontend-Focused Full-Stack Engineer building modern web applications with AI-powered features and intelligent automations.
+            Software Engineer building full-stack software, AI-powered applications, API integrations and business automation.
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: 20, color: '#666666' }}>
-          <span>React · Vue · Next.js · TypeScript · Node.js · Docker</span>
+          <span>Software · AI · APIs · Automation</span>
           <span>barnx-portfolio-v2.vercel.app</span>
         </div>
       </div>
