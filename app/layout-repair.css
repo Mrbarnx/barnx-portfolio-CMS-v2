@@ -30,15 +30,12 @@ html,body{max-width:100%;overflow-x:clip}
 .aboutStories article>span{font-size:13px;color:#777}
 .aboutStories article h3{font-size:28px;letter-spacing:-.03em;margin:0 0 12px}
 .aboutStories article p{color:#666;font-size:17px;max-width:520px}
-.featured,.experience{max-width:1220px;margin:110px auto;padding:0 30px}
+.featured,.experience,.capabilitiesTeaser{max-width:1220px;margin:110px auto;padding:0 30px}
 .sectionHead{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:40px}
 .sectionHead h2{font-size:52px;margin:12px 0}
 .sectionHead p{color:#666;max-width:560px}
 .experience>h2{font-size:52px}
-.experience article{display:grid;grid-template-columns:240px 1fr;gap:40px;padding:35px 0;border-top:1px solid #dededa}
-.experience time{font-size:11px;color:#777;letter-spacing:.1em}
-.experience h3{margin:0 0 8px;font-size:22px}
-.experience p{color:#666;max-width:720px}
+.capabilityPreviewGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.capabilityPreviewGrid article{position:relative;min-height:250px;padding:30px;border:1px solid #dededa;border-radius:24px;background:#fff}.capabilityPreviewGrid svg{width:25px;height:25px}.capabilityPreviewGrid span{position:absolute;right:28px;top:30px;color:#999;font-size:11px}.capabilityPreviewGrid h3{margin:55px 0 10px;font-size:24px;letter-spacing:-.03em}.capabilityPreviewGrid p{margin:0;color:#666;line-height:1.65}.experienceLink{display:grid;grid-template-columns:240px minmax(0,1fr) 28px;align-items:start;gap:40px;padding:35px 0;border-top:1px solid #dededa;transition:padding .2s ease}.experienceLink:hover{padding-left:12px}.experienceLink>svg{width:19px;height:19px}.experienceLink time{font-size:11px;color:#777;letter-spacing:.1em}.experienceLink h3{margin:0 0 8px;font-size:22px}.experienceLink p{margin:0;color:#666;max-width:720px}
 .focus{max-width:1220px;margin:110px auto;padding:70px;border-radius:32px;background:#0a0a0a;color:#fff;display:grid;grid-template-columns:1fr 1.2fr;gap:70px}
 .focus h2{margin-bottom:0}
 .focusCards{display:grid;grid-template-columns:1fr 1fr;gap:15px}
@@ -137,7 +134,7 @@ footer{border-top:1px solid #e2e2df;margin-top:110px;padding:55px 4vw 25px;backg
   .focus{grid-template-columns:1fr;padding:45px}
   .newsletter{grid-template-columns:70px 1fr}
   .newsletter form{grid-column:1/-1}
-  .experience article{grid-template-columns:1fr;gap:10px}
+  .capabilityPreviewGrid{grid-template-columns:1fr}.experienceLink{grid-template-columns:1fr 24px;gap:10px}.experienceLink time{grid-column:1/-1}
   .caseColumns{grid-template-columns:1fr;gap:30px}
   .resourceGrid{grid-template-columns:1fr!important}
   .resourceCard{grid-template-columns:64px minmax(0,1fr)}
@@ -155,7 +152,7 @@ footer{border-top:1px solid #e2e2df;margin-top:110px;padding:55px 4vw 25px;backg
   .techMarqueeGroup{width:max-content!important;min-width:max-content!important;flex:0 0 auto!important;justify-content:flex-start!important;gap:34px!important;padding:14px 34px 14px 0!important}
   .techMarqueeItem{gap:8px!important;font-size:12px!important}
   .techMarqueeItem img{width:19px!important;height:19px!important;max-width:19px!important}
-  .aboutSection,.featured,.experience,.page,.studioLibrary{padding-left:18px;padding-right:18px;margin-top:75px}
+  .aboutSection,.featured,.experience,.capabilitiesTeaser,.page,.studioLibrary{padding-left:18px;padding-right:18px;margin-top:75px}
   .aboutSection{display:block}
   .aboutVisual{height:430px;margin-bottom:35px;border-radius:22px}
   .aboutStories>h2{font-size:38px}
