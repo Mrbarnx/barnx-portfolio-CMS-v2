@@ -15,9 +15,9 @@ const techCards = [
   { key: 'next', title: 'Next.js', subtitle: 'Full-Stack React', iconSrc: 'https://cdn.simpleicons.org/nextdotjs/000000', className: 'f2' },
   { key: 'typescript', title: 'TypeScript', subtitle: 'Type Safety', iconSrc: 'https://cdn.simpleicons.org/typescript/000000', className: 'f3' },
   { key: 'vue', title: 'Vue', subtitle: 'Progressive Framework', iconSrc: 'https://cdn.simpleicons.org/vuedotjs/000000', className: 'f4' },
-  { key: 'automation', title: 'Automation', subtitle: 'Growing: n8n · APIs', iconSrc: 'https://cdn.simpleicons.org/n8n/000000', className: 'f5' },
+  { key: 'automation', title: 'Automation', subtitle: 'n8n · APIs · Workflows', iconSrc: 'https://cdn.simpleicons.org/n8n/000000', className: 'f5' },
   { key: 'ai', title: 'AI Integrations', subtitle: 'OpenAI · Claude · Gemini', className: 'f6', icon: 'sparkles' },
-  { key: 'frontend', title: 'Frontend Engineering', subtitle: 'Pixel Perfect · Performant', className: 'f7', icon: 'code' }
+  { key: 'frontend', title: 'Software Engineering', subtitle: 'Full-Stack · Product Systems', className: 'f7', icon: 'code' }
 ];
 
 const techMarqueeItems = [
@@ -27,14 +27,14 @@ const techMarqueeItems = [
   { label: 'TypeScript', iconSrc: 'https://cdn.simpleicons.org/typescript/000000' },
   { label: 'Node.js', iconSrc: 'https://cdn.simpleicons.org/nodedotjs/000000' },
   { label: 'Tailwind CSS', iconSrc: 'https://cdn.simpleicons.org/tailwindcss/000000' },
-  { label: 'n8n · growing', iconSrc: 'https://cdn.simpleicons.org/n8n/000000' }
+  { label: 'n8n', iconSrc: 'https://cdn.simpleicons.org/n8n/000000' }
 ];
 
 const stories = [
   ['01', 'The beginning', 'I started with the frontend — learning how strong interfaces turn ideas into experiences people can actually use.'],
   ['02', 'From screens to products', 'I moved from isolated pages into reusable systems, complete product flows and production-ready applications.'],
   ['03', 'Frontend Engineer · Imisi Health', 'Today I build responsive interfaces, reusable components, API-driven workflows and product improvements in a professional engineering team.'],
-  ['04', 'The next layer', 'I am growing deeper into backend engineering, AI integrations and workflow automation while keeping frontend craft at the center.']
+  ['04', 'The next layer', 'I now connect frontend craft with backend systems, AI integrations and workflow automation to build more complete software.']
 ];
 
 function TechIcon({ card }: { card: (typeof techCards)[number] }) {
@@ -160,9 +160,9 @@ export function HomeClient({ projects, settings }: { projects: Project[]; settin
       <div className="aboutStories"><span className="eyebrow">ABOUT / STORY</span><h2>Building one layer deeper<br/>with every project.</h2>{stories.map((s,i)=><article data-story className={active===i?'active':''} key={s[0]}><span>{s[0]}</span><div><h3>{s[1]}</h3><p>{s[2]}</p></div></article>)}</div>
     </section>
 
-    <section className="featured"><div className="sectionHead"><div><span className="eyebrow">FEATURED WORK</span><h2>Selected Projects</h2><p>Real builds showing frontend craft, product thinking and growing full-stack capability.</p></div><Link className="button" href="/projects">View all projects <ArrowRight/></Link></div><div className="projectGrid">{projects.slice(0,3).map(p=><Link className="projectCard" href={`/projects/${p.slug}`} key={p.slug}><div className={`projectVisual ${p.tone}${p.coverImage?' hasCover':''}`}><div className="browser"><i/><i/><i/></div>{p.coverImage?<img className="projectCoverImage" src={p.coverImage.url} alt={p.coverImage.alt}/>:<><strong>{p.display}</strong><small>{p.visualSubtitle}</small></>}</div><div className="projectBody"><span>{p.category} · {p.status}</span><h3>{p.title}</h3><p>{p.short}</p><div className="tags">{p.tech.slice(0,4).map(t=><b key={t}>{t}</b>)}</div><em>Case study →</em></div></Link>)}</div></section>
+    <section className="featured"><div className="sectionHead"><div><span className="eyebrow">FEATURED WORK</span><h2>Selected Projects</h2><p>Real builds showing software engineering, product thinking, AI integration and automation capability.</p></div><Link className="button" href="/projects">View all projects <ArrowRight/></Link></div><div className="projectGrid">{projects.slice(0,3).map(p=><Link className="projectCard" href={`/projects/${p.slug}`} key={p.slug}><div className={`projectVisual ${p.tone}${p.coverImage?' hasCover':''}`}><div className="browser"><i/><i/><i/></div>{p.coverImage?<img className="projectCoverImage" src={p.coverImage.url} alt={p.coverImage.alt}/>:<><strong>{p.display}</strong><small>{p.visualSubtitle}</small></>}</div><div className="projectBody"><span>{p.category} · {p.status}</span><h3>{p.title}</h3><p>{p.short}</p><div className="tags">{p.tech.slice(0,4).map(t=><b key={t}>{t}</b>)}</div><em>Case study →</em></div></Link>)}</div></section>
     <section className="experience"><div className="sectionHead"><div><span className="eyebrow">EXPERIENCE</span><h2>Professional progression.</h2><p>Selected roles, responsibilities and the work behind each chapter.</p></div><Link className="button" href="/experience">View full experience <ArrowRight/></Link></div>{experience.map(x=><Link className="experienceLink" href={`/experience#${x.company.toLowerCase().replaceAll(' ','-')}`} key={x.company}><time>{x.date}</time><div><h3>{x.role} · {x.company}</h3><p>{x.description}</p></div><ArrowRight/></Link>)}</section>
-    <section className="focus"><div><span className="eyebrow light">CURRENT FOCUS</span><h2>Frontend first.<br/>Full product next.</h2></div><div className="focusCards"><article><Code2/><h3>Strongest now</h3><p>React, Vue, Next.js, TypeScript, responsive UI, accessibility, component architecture and polished product interfaces.</p></article><article><Zap/><h3>Growing deeper</h3><p>Node.js, PostgreSQL, AI API integrations, workflow automation, n8n and cloud deployment.</p></article></div></section>
+    <section className="focus"><div><span className="eyebrow light">CURRENT FOCUS</span><h2>Software engineering.<br/>AI and automation.</h2></div><div className="focusCards"><article><Code2/><h3>Strongest now</h3><p>Full-stack applications, product interfaces, backend systems, databases, APIs and dependable software delivery.</p></article><article><Zap/><h3>Growing deeper</h3><p>AI-powered applications, API integrations, workflow automation, n8n, cloud deployment and DevOps practices.</p></article></div></section>
     <Newsletter/>
 
     <style jsx global>{`
