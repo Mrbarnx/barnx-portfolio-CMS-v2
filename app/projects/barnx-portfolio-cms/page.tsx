@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import styles from './case-study.module.css';
+import proofStyles from './admin-proof.module.css';
 
 export const metadata: Metadata = {
   title: 'Barnx Portfolio CMS',
@@ -32,6 +34,12 @@ const proof = [
   'Structured validation',
   'First-party analytics',
   'Responsive public and admin UI',
+];
+
+const adminProof = [
+  { src: '/images/barnx-portfolio-cms/admin-dashboard.png', alt: 'Protected Barnx Portfolio CMS admin dashboard', title: 'Protected admin workspace', description: 'One authenticated dashboard for projects, professional content, media, analytics and other portfolio content.', width: 1584, height: 761 },
+  { src: '/images/barnx-portfolio-cms/professional-content-editor.png', alt: 'Professional positioning editor with draft and publish controls', title: 'Structured professional-content editor', description: 'Clear form fields and separate draft/publish actions replace fragile source-code or raw-JSON editing.', width: 1307, height: 742 },
+  { src: '/images/barnx-portfolio-cms/privacy-first-analytics.png', alt: 'Privacy-first analytics dashboard displaying anonymous traffic activity', title: 'Privacy-first analytics', description: 'First-party visitor and activity reporting without storing names, email addresses or IP addresses.', width: 1364, height: 753 },
 ];
 
 export default function BarnxPortfolioCmsCaseStudy() {
@@ -90,11 +98,15 @@ export default function BarnxPortfolioCmsCaseStudy() {
       <div><p>Public queries are limited to published content. Drafts remain admin-only. Content mutations require authentication and server-side validation, while storage policies constrain uploads and protected routes use no-store behavior.</p><p>This is evidence of applied security foundations—not a claim that the project is a general-purpose security platform.</p></div>
     </section>
 
-    <section className={styles.privateProof}>
-      <span>PRIVATE ADMIN PROOF</span>
-      <h2>Admin screenshots and a private walkthrough are shared directly.</h2>
-      <p>The admin contains private operational controls, so access is not exposed publicly. Verified screenshots can be added here after sensitive data is removed.</p>
-      <a href="mailto:mrbarnx@gmail.com?subject=Barnx%20Portfolio%20CMS%20Walkthrough">Request a walkthrough →</a>
+    <section className={proofStyles.adminProof}>
+      <span className="eyebrow">ADMIN SYSTEM PROOF</span>
+      <h2>Real interfaces from the protected CMS.</h2>
+      <p className={proofStyles.adminProofIntro}>The admin itself remains private. These reviewed screenshots show the content-management, publishing and analytics systems without exposing credentials or sensitive data.</p>
+      <div className={proofStyles.screenshotGrid}>{adminProof.map((item) => <figure key={item.src}>
+        <div className={proofStyles.screenshotFrame}><Image src={item.src} alt={item.alt} width={item.width} height={item.height} sizes="(max-width: 760px) 100vw, 50vw" /></div>
+        <figcaption><strong>{item.title}</strong><span>{item.description}</span></figcaption>
+      </figure>)}</div>
+      <div className={proofStyles.walkthroughNote}><div><strong>Private walkthrough</strong><span>A guided video walkthrough will be added separately.</span></div><a href="mailto:mrbarnx@gmail.com?subject=Barnx%20Portfolio%20CMS%20Walkthrough">Request access →</a></div>
     </section>
 
     <section className="nextCase"><p>Explore more work</p><Link href="/projects">View all projects →</Link></section>
