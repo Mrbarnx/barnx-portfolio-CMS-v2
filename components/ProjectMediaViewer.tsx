@@ -48,7 +48,7 @@ export function ProjectMediaViewer({ images, video, projectTitle, fallbackTitle,
   const playableVideo = video?.url ? embedUrl(video.url) : null;
 
   return (
-    <section className="projectMediaSection" aria-label={`${projectTitle} media`}>
+    <section className="projectMediaSection" id="project-media" aria-label={`${projectTitle} media`}>
       <div className="projectMediaControls" aria-label="Choose project media">
         <button className={mode === 'images' ? 'active' : ''} type="button" onClick={() => setMode('images')} aria-pressed={mode === 'images'}>Images</button>
         {video?.url ? <button className={mode === 'video' ? 'active' : ''} type="button" onClick={() => setMode('video')} aria-pressed={mode === 'video'}>{video.title || 'Watch video'} ▶</button> : null}

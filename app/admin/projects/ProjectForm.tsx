@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import type { ProjectActionState, ProjectRow } from '@/lib/admin/projects';
-import { initialProjectActionState, projectStatuses, projectTones } from '@/lib/admin/projects';
+import { initialProjectActionState, projectStatuses, projectTones, projectTypes } from '@/lib/admin/projects';
 import type { MediaAsset } from '@/lib/admin/media';
 import { mediaPublicUrl } from '@/lib/admin/media';
 import { createProject, updateProject } from './actions';
@@ -68,10 +68,12 @@ export function ProjectForm({
           <label>Display title<input name="display_title" defaultValue={project?.display_title} required /><FieldError state={state} name="display_title" /></label>
           <label>Slug<input name="slug" defaultValue={project?.slug} placeholder="my-project" required /><FieldError state={state} name="slug" /></label>
           <label>Category<input name="category" defaultValue={project?.category} placeholder="Full-Stack Product" required /><FieldError state={state} name="category" /></label>
+          <label>Project type<select name="project_type" defaultValue={project?.project_type ?? 'public_build'}>{projectTypes.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><small>Controls the public project filters.</small></label>
           <label>Status<select name="status" defaultValue={project?.status ?? 'in_development'}>{projectStatuses.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           <label>Visual tone<select name="tone" defaultValue={project?.tone ?? 'light'}>{projectTones.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           <label>Sort order<input name="sort_order" type="number" min="0" max="9999" defaultValue={project?.sort_order ?? 0} required /><FieldError state={state} name="sort_order" /></label>
           <label className={styles.checkboxLabel}><input name="featured" type="checkbox" defaultChecked={project?.featured} /><span><strong>Featured project</strong><small>Eligible for prominent placement when the public site is connected.</small></span></label>
+          <label className={styles.checkboxLabel}><input name="case_study_enabled" type="checkbox" defaultChecked={project?.case_study_enabled ?? true} /><span><strong>Detailed case study</strong><small>Show the internal Case Study action and include this project in the Case Studies filter.</small></span></label>
         </div>
       </section>
 
@@ -101,6 +103,7 @@ export function ProjectForm({
           <div className={styles.fieldGrid}>
             <label>Live URL<input name="live_url" type="url" defaultValue={project?.live_url ?? ''} placeholder="https://" /><FieldError state={state} name="live_url" /></label>
             <label>GitHub URL<input name="github_url" type="url" defaultValue={project?.github_url ?? ''} placeholder="https://github.com/" /><FieldError state={state} name="github_url" /></label>
+            <label>Purchase URL <span>templates only</span><input name="buy_url" type="url" defaultValue={project?.buy_url ?? ''} placeholder="https://" /><FieldError state={state} name="buy_url" /></label>
           </div>
         </div>
       </section>

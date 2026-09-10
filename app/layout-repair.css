@@ -31,7 +31,7 @@ html,body{max-width:100%;overflow-x:clip}
 .aboutStories article h3{font-size:28px;letter-spacing:-.03em;margin:0 0 12px}
 .aboutStories article p{color:#666;font-size:17px;max-width:520px}
 .featured,.experience,.capabilitiesTeaser{max-width:1220px;margin:110px auto;padding:0 30px}
-.sectionHead{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:40px}
+.sectionHead{display:flex;justify-content:space-between;gap:35px;align-items:flex-end;margin-bottom:40px}
 .sectionHead h2{font-size:52px;margin:12px 0}
 .sectionHead p{color:#666;max-width:560px}
 .experience>h2{font-size:52px}
@@ -54,6 +54,7 @@ html,body{max-width:100%;overflow-x:clip}
 /* Projects and detail pages */
 .projectGrid>*{min-width:0}
 .projectCard{display:block;height:100%}
+.projectFilters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 34px}.projectFilters button{min-height:40px;padding:0 15px;border:1px solid #deded9;border-radius:999px;background:#fff;color:#555;font:inherit;font-size:12px;font-weight:750;cursor:pointer}.projectFilters button:hover,.projectFilters button:focus-visible{border-color:#111;color:#111;outline:none}.projectFilters button.active{border-color:#111;background:#111;color:#fff}.projectActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.projectActions a{display:inline-flex;align-items:center;min-height:36px;padding:0 11px;border:1px solid #deded9;border-radius:999px;color:#333;font-size:11px;font-weight:800}.projectActions a:first-child{border-color:#111;background:#111;color:#fff}.projectFilterEmpty{min-height:260px;padding:48px;border:1px solid #deded9;border-radius:24px;background:#fff;display:grid;place-content:center;text-align:center}.projectFilterEmpty h2{margin:0 0 8px;font-size:28px}.projectFilterEmpty p{margin:0;color:#777}.projectCard>.projectBody{padding-bottom:58px}
 .caseStudy,.resourceDetail{max-width:1080px}
 .caseHero,.resourceHero{padding:60px 0 35px}
 .caseHero p,.resourceHero p{font-size:18px;color:#666;max-width:680px}
@@ -163,6 +164,7 @@ footer{border-top:1px solid #e2e2df;margin-top:110px;padding:55px 4vw 25px;backg
   .sectionHead h2,.experience>h2{font-size:40px}
   .sectionHead .button{margin-top:15px}
   .projectGrid{grid-template-columns:1fr!important}
+  .projectFilters{gap:6px;margin-bottom:24px}.projectFilters button{min-height:38px;padding:0 12px;font-size:11px}.projectActions a{flex:1 1 auto;justify-content:center}.projectFilterEmpty{min-height:220px;padding:30px 20px}
   .projectVisual{min-height:220px}
   .projectVisual strong{font-size:30px;text-align:center}
   .projectBody{padding:20px 20px 58px}

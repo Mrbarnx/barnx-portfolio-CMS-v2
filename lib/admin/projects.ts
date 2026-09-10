@@ -14,6 +14,13 @@ export const projectTones = [
   ['black', 'Black'],
 ] as const;
 
+export const projectTypes = [
+  ['public_build', 'Public build'],
+  ['client_work', 'Client work'],
+  ['private_project', 'Private project'],
+  ['template', 'Template'],
+] as const;
+
 const optionalUrl = z.string().trim().refine(
   (value) => !value || z.string().url().safeParse(value).success,
   'Enter a complete URL beginning with https://',
@@ -35,6 +42,8 @@ export const projectFormSchema = z.object({
     'Use lowercase letters, numbers and hyphens only.',
   ),
   category: z.string().trim().min(2, 'Enter a category.'),
+  project_type: z.enum(['public_build', 'client_work', 'private_project', 'template']),
+  case_study_enabled: z.boolean(),
   status: z.enum(['in_development', 'public_build', 'private_demo', 'completed', 'archived']),
   short_summary: z.string().trim().min(10, 'Add a short summary of at least 10 characters.'),
   overview: z.string().trim().min(10, 'Add an overview of at least 10 characters.'),
@@ -49,6 +58,7 @@ export const projectFormSchema = z.object({
   lessons: z.string().trim(),
   live_url: optionalUrl,
   github_url: optionalUrl,
+  buy_url: optionalHttpsUrl,
   sort_order: z.coerce.number().int().min(0).max(9999),
   featured: z.boolean(),
   cover_media_id: z.union([z.literal(''), mediaId]),
@@ -61,6 +71,9 @@ export const projectFormSchema = z.object({
 }).superRefine((values, context) => {
   if (['public', 'unlisted'].includes(values.demo_visibility) && !values.demo_video_url) {
     context.addIssue({ code: z.ZodIssueCode.custom, path: ['demo_video_url'], message: 'Add the external video URL.' });
+  }
+  if (values.buy_url && values.project_type !== 'template') {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ['buy_url'], message: 'Purchase links are available only for template projects.' });
   }
 });
 
@@ -100,6 +113,8 @@ export function projectFormData(formData: FormData) {
     display_title: formData.get('display_title'),
     slug: formData.get('slug'),
     category: formData.get('category'),
+    project_type: formData.get('project_type'),
+    case_study_enabled: formData.get('case_study_enabled') === 'on',
     status: formData.get('status'),
     short_summary: formData.get('short_summary'),
     overview: formData.get('overview'),
@@ -114,6 +129,7 @@ export function projectFormData(formData: FormData) {
     lessons: formData.get('lessons'),
     live_url: formData.get('live_url'),
     github_url: formData.get('github_url'),
+    buy_url: formData.get('buy_url'),
     sort_order: formData.get('sort_order'),
     featured: formData.get('featured') === 'on',
     cover_media_id: String(formData.get('cover_media_id') ?? ''),
@@ -135,4 +151,8 @@ export function splitList(value: string) {
 
 export function statusLabel(status: string) {
   return projectStatuses.find(([value]) => value === status)?.[1] ?? status;
+}
+
+export function projectTypeLabel(type: string) {
+  return projectTypes.find(([value]) => value === type)?.[1] ?? type;
 }
