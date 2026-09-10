@@ -17,11 +17,11 @@ export type PublicSiteSettings = {
 export const site = {
   name: 'Barnx',
   person: 'Barnabas Mikel',
-  title: 'Barnx — Barnabas Mikel',
+  title: 'Barnx — Software Engineer | AI Engineering & Automation',
   description:
-    'Frontend-Focused Full-Stack Engineer building modern web applications while integrating AI-powered features and intelligent automations.',
+    'Software Engineer building full-stack applications, AI-powered systems, API integrations and business automation.',
   shortDescription:
-    'Frontend-focused product engineering, AI integrations and intelligent automations.',
+    'Full-stack software, AI-powered systems, integrations and business automation.',
   email: 'mrbarnx@gmail.com',
   url: siteUrl,
   github: 'https://github.com/Mrbarnx',

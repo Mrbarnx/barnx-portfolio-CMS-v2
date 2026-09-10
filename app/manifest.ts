@@ -3,7 +3,7 @@ import { site } from '@/data/site';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Barnx — Barnabas Mikel',
+    name: 'Barnx — Software Engineer | AI Engineering & Automation',
     short_name: 'Barnx',
     description: site.description,
     start_url: '/',

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { BarChart3, BookOpen, FolderKanban, Gauge, Images, LogOut, Settings, Sparkles } from 'lucide-react';
+import { BarChart3, BookOpen, BriefcaseBusiness, FolderKanban, Gauge, Images, LogOut, Settings, Sparkles } from 'lucide-react';
 import { requireCmsAdmin } from '@/lib/admin/requireCmsAdmin';
 import { signOut } from './actions';
 import styles from './admin.module.css';
@@ -17,6 +17,7 @@ const dashboardItems = [
   { label: 'Learning Paths', description: 'Organize modules, lessons and downloads.', icon: BookOpen, href: '/admin/learning-paths' },
   { label: 'Media Library', description: 'Upload reusable project and content images.', icon: Images, href: '/admin/media' },
   { label: 'Analytics', description: 'Review anonymous visits, pages and useful actions.', icon: BarChart3, href: '/admin/analytics' },
+  { label: 'Professional Content', description: 'Manage capabilities, skills, services and experience.', icon: BriefcaseBusiness, href: '/admin/professional' },
   { label: 'Site Settings', description: 'Update public identity, links and SEO defaults.', icon: Settings, href: '/admin/settings' },
 ];
 
@@ -29,7 +30,7 @@ export default async function AdminPage() {
         <div>
           <p className={styles.eyebrow}>Content management</p>
           <h1>Barnx Admin</h1>
-          <p className={styles.muted}>Manage projects, Studio content, Impact stories, learning paths, analytics and public settings.</p>
+          <p className={styles.muted}>Manage projects, professional content, Studio resources, Impact stories, learning paths, analytics and public settings.</p>
         </div>
         <form action={signOut}>
           <button className={styles.signOut} type="submit"><LogOut /> Sign out</button>

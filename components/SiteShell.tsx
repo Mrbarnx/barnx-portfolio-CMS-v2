@@ -32,7 +32,7 @@ export function SiteShell({children,settings}:{children:React.ReactNode;settings
       <div className="footerGrid">
         <div>
           <Logo/>
-          <p>Frontend-focused product engineering, thoughtful interfaces and practical AI integrations.</p>
+          <p>Full-stack software, AI-powered systems, API integrations and practical business automation.</p>
           <div className="socials">
             <a href={settings.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github/></a>
             <a href={settings.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin/></a>

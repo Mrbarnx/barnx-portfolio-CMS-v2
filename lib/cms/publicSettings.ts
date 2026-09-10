@@ -6,7 +6,7 @@ import { site, type PublicSiteSettings } from '@/data/site';
 import { getSupabaseConfig, hasSupabaseConfig } from '@/lib/supabase/config';
 
 export const defaultSiteSettings: PublicSiteSettings = {
-  headline: 'Frontend-Focused Full-Stack Engineer building modern web applications while integrating AI-powered features and intelligent automations.',
+  headline: 'Software Engineer building full-stack applications, AI-powered systems, API integrations and business automation.',
   availability: 'Available for new opportunities',
   email: site.email,
   github: site.github,
@@ -26,7 +26,10 @@ export const getPublicSiteSettings = cache(async (): Promise<PublicSiteSettings>
     const client = createClient(url, anonKey, { auth: { persistSession: false } });
     const { data, error } = await client.from('site_settings').select('value').eq('key', 'site.profile').eq('is_public', true).maybeSingle();
     if (error || !data?.value || typeof data.value !== 'object') return defaultSiteSettings;
-    return { ...defaultSiteSettings, ...(data.value as Partial<PublicSiteSettings>) };
+    const settings = { ...defaultSiteSettings, ...(data.value as Partial<PublicSiteSettings>) };
+    if (settings.headline === 'Frontend-Focused Full-Stack Engineer building modern web applications while integrating AI-powered features and intelligent automations.') settings.headline = defaultSiteSettings.headline;
+    if (/Frontend-Focused Full-Stack Engineer/i.test(settings.seoDescription)) settings.seoDescription = defaultSiteSettings.seoDescription;
+    return settings;
   } catch {
     return defaultSiteSettings;
   }
