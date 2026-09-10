@@ -28,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '' ? 1 : path === '/projects' || path === '/barnx-studio' ? 0.9 : 0.7,
   }));
 
-  const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
+  const projectPages: MetadataRoute.Sitemap = projects.filter((project) => project.caseStudyEnabled !== false).map((project) => ({
     url: `${site.url}/projects/${project.slug}`,
     changeFrequency: 'monthly',
     priority: 0.8,

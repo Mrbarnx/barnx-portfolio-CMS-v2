@@ -27,13 +27,16 @@ type PublicProjectRow = {
   lessons: string;
   live_url: string | null;
   github_url: string | null;
+  buy_url: string | null;
+  project_type: 'public_build' | 'client_work' | 'private_project' | 'template';
+  case_study_enabled: boolean;
   featured: boolean;
   demo_visibility: 'none' | 'public' | 'unlisted' | 'private';
   demo_video_url: string | null;
   demo_video_title: string;
 };
 
-const publicProjectFields = 'id,slug,title,display_title,category,status,short_summary,overview,visual_subtitle,tone,problem,solution,role,features,technologies,challenges,lessons,live_url,github_url,featured,demo_visibility,demo_video_url,demo_video_title';
+const publicProjectFields = 'id,slug,title,display_title,category,status,short_summary,overview,visual_subtitle,tone,problem,solution,role,features,technologies,challenges,lessons,live_url,github_url,buy_url,project_type,case_study_enabled,featured,demo_visibility,demo_video_url,demo_video_title';
 
 const statusLabels: Record<string, string> = {
   in_development: 'In development',
@@ -75,6 +78,9 @@ function mapProject(row: PublicProjectRow, media?: ProjectMedia): Project {
     lessons: row.lessons,
     live: row.live_url ?? undefined,
     github: row.github_url ?? undefined,
+    buyUrl: row.buy_url ?? undefined,
+    projectType: row.project_type,
+    caseStudyEnabled: row.case_study_enabled,
     coverImage: media?.cover,
     galleryImages: media?.gallery,
     video,

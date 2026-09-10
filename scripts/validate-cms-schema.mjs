@@ -21,6 +21,8 @@ const projectMediaPath = new URL(
   import.meta.url,
 );
 const projectMediaSql = readFileSync(projectMediaPath, 'utf8');
+const projectShowcasePath = new URL('../supabase/migrations/202609100001_project_showcase_categories.sql', import.meta.url);
+const projectShowcaseSql = readFileSync(projectShowcasePath, 'utf8');
 const studioContentPath = new URL('../supabase/migrations/202609040003_studio_prompt_content.sql', import.meta.url);
 const studioContentSql = readFileSync(studioContentPath, 'utf8');
 const analyticsPath = new URL('../supabase/migrations/202609040004_cms_analytics.sql', import.meta.url);
@@ -168,5 +170,12 @@ assert.match(retentionSql, /interval '90 days'/);
 assert.match(retentionSql, /interval '24 hours'/);
 assert.match(retentionSql, /analytics_events_retention_trigger/);
 assert.doesNotMatch(retentionSql, /\b(ip|ip_address|email|full_name)\b/i, 'Retention must not add direct personal identifiers.');
+
+assert.match(projectShowcaseSql, /^-- Project ownership categories and context-aware portfolio actions/m);
+assert.match(projectShowcaseSql, /\bbegin;[\s\S]*\bcommit;\s*$/);
+assert.match(projectShowcaseSql, /project_type in \('public_build', 'client_work', 'private_project', 'template'\)/);
+assert.match(projectShowcaseSql, /case_study_enabled boolean not null default true/);
+assert.match(projectShowcaseSql, /buy_url is null or buy_url ~ '\^https:\/\/'/);
+assert.match(projectShowcaseSql, /buy_url is null or project_type = 'template'/);
 
 console.log(`CMS schema, permissions, storage, analytics limits, 90-day retention and final hardening validation passed for ${tables.length} foundation tables.`);

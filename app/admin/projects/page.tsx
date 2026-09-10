@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink, FilePlus2, Pencil, Upload } from 'lucide-react';
 import { requireCmsAdmin } from '@/lib/admin/requireCmsAdmin';
-import { statusLabel, type ProjectRow } from '@/lib/admin/projects';
+import { projectTypeLabel, statusLabel, type ProjectRow } from '@/lib/admin/projects';
 import { importCurrentProjects, restoreProject, setProjectPublished } from './actions';
 import styles from './projects.module.css';
 
@@ -75,6 +75,8 @@ export default async function AdminProjectsPage({ searchParams }: { searchParams
                   <div className={styles.badges}>
                     <span className={project.published ? styles.publishedBadge : styles.draftBadge}>{project.published ? 'Published' : 'Draft'}</span>
                     <span>{statusLabel(project.status)}</span>
+                    <span>{projectTypeLabel(project.project_type)}</span>
+                    {project.case_study_enabled ? <span>Case study</span> : null}
                     {project.featured ? <span>Featured</span> : null}
                   </div>
                   <h2>{project.title}</h2>
