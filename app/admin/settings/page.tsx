@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { requireCmsAdmin } from '@/lib/admin/requireCmsAdmin';
 import { defaultSiteSettings } from '@/lib/cms/publicSettings';
 import { saveSiteSettings } from '../content-actions';
+import { ResumeUploadField } from './ResumeUploadField';
 import styles from '../content.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export default async function SettingsAdmin({ searchParams }: { searchParams: Pr
   const query = await searchParams;
   return <main className={styles.page}><div className={styles.wrap}>
     <Link className={styles.back} href="/admin">← Admin home</Link>
-    <header className={styles.header}><div><p className={styles.eyebrow}>Site settings</p><h1>Public settings</h1><p>Manage availability, contact links and SEO defaults. Professional positioning is managed separately.</p></div></header>
+    <header className={styles.header}><div><p className={styles.eyebrow}>Site settings</p><h1>Public settings</h1><p>Manage your résumé, availability, contact links and SEO defaults. Professional positioning is managed separately.</p></div></header>
     {query.saved === 'true' ? <p className={styles.notice}>Public settings saved and relevant pages refreshed.</p> : null}
     {query.saved === 'failed' || query.error ? <p className={styles.error}>Settings were not saved. Check every URL and required field.</p> : null}
     <p className={styles.guard}>Never place API keys, passwords or private tokens here. This record is intentionally public. <Link href="/admin/professional">Edit professional positioning →</Link></p>
@@ -22,7 +23,7 @@ export default async function SettingsAdmin({ searchParams }: { searchParams: Pr
       <section className={styles.section}><h2>Availability & résumé</h2><div className={styles.stack}>
         <label>Availability label<input name="availability" required defaultValue={value.availability} /></label>
         <label>Location<input name="location" required defaultValue={value.location} /></label>
-        <label>Résumé path<input name="resumeUrl" required defaultValue={value.resumeUrl} /></label>
+        <ResumeUploadField defaultValue={value.resumeUrl} />
       </div></section>
       <section className={styles.section}><h2>Contact & social links</h2><div className={styles.fields}>
         <label>Email<input name="email" type="email" required defaultValue={value.email} /></label>

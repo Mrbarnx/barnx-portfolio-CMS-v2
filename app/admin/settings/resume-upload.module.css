@@ -1,0 +1,9 @@
+.resumeField { display: grid; gap: 10px; }
+.resumeUploadRow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.uploadButton { display: inline-flex; min-height: 42px; padding: 0 16px; align-items: center; justify-content: center; gap: 8px; border: 1px solid #333; border-radius: 11px; color: #eee; background: #191919; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.uploadButton:disabled { cursor: wait; opacity: .65; }
+.uploadButton svg { width: 17px; height: 17px; }
+.filePicker { display: inline-flex !important; width: auto; padding: 10px 13px; border: 1px dashed #414141; border-radius: 10px; color: #ddd; background: #111; cursor: pointer; }
+.filePicker input { position: absolute; width: 1px !important; height: 1px; padding: 0 !important; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.fieldHelp, .uploadStatus { margin: 0; color: #8e8e88; font-size: 12px; font-weight: 500; }
+.uploadStatus { color: #84dec6; }
