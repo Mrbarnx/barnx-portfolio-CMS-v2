@@ -111,7 +111,7 @@ export function HomeClient({ projects, settings, professional }: { projects: Pro
       <div className="heroGrid" />
       <motion.div className="heroCopy" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }}>
         <span className="availability"><i aria-hidden="true" />{settings.availability}</span>
-        <h1>Hi, I’m<br/><strong>Barnabas Mikel.</strong></h1>
+        <h1 className="kineticTitle"><motion.span initial={{y:'110%'}} animate={{y:0}} transition={{duration:.72,delay:.05,ease:[.22,1,.36,1]}}>Hi, I’m</motion.span><br/><motion.strong initial={{y:'110%'}} animate={{y:0}} transition={{duration:.82,delay:.13,ease:[.22,1,.36,1]}}>Barnabas Mikel.</motion.strong></h1>
         <p><strong className="professionalTitle">{professional.profile.title}</strong>{professional.profile.positioningStatement}</p>
         <div className="heroActions">
           <Link className="button black" href="/projects">View Projects <ArrowRight/></Link>
@@ -138,10 +138,10 @@ export function HomeClient({ projects, settings, professional }: { projects: Pro
       </div>
     </section>
 
-    <section className="capabilitiesTeaser">
+    <motion.section className="capabilitiesTeaser" initial={{opacity:0,y:38}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.12}} transition={{duration:.78,ease:[.22,1,.36,1]}}>
       <div className="sectionHead"><div><span className="eyebrow">CAPABILITIES</span><h2>What I can help build.</h2><p>Technical skills connected to practical product work—not a disconnected wall of logos.</p></div><Link className="button" href="/capabilities">Explore skills & services <ArrowRight/></Link></div>
       <div className="capabilityPreviewGrid">{publicCapabilities.slice(0,3).map((item,index)=>{const Icon=[Code2,Layers3,Bot][index]??Code2;return <article key={item.title}><Icon/><span>{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.summary}</p></article>})}</div>
-    </section>
+    </motion.section>
 
     <ImpactTeaser/>
 

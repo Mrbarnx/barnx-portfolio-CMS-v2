@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Project, ProjectType } from '@/data/content';
 import { ProjectStar } from '@/components/ProjectStar';
 
@@ -48,8 +49,8 @@ function ProjectCard({ project }: { project: ArchiveProject }) {
       : <><strong>{project.display}</strong><small>{project.visualSubtitle}</small></>}
   </div>;
 
-  return <div className="projectCardWrap">
-    <article className="projectCard">
+  return <motion.div className="projectCardWrap" layout initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} exit={{opacity:0,y:18,scale:.98}} transition={{duration:.42,ease:[.22,1,.36,1]}}>
+    <motion.article className="projectCard" whileHover={{y:-8,rotateX:1.2,rotateY:-1.2}} transition={{duration:.25}}>
       {visualHref
         ? visualHref.startsWith('/') ? <Link href={visualHref}>{visual}</Link> : <a href={visualHref} target="_blank" rel="noreferrer">{visual}</a>
         : visual}
@@ -71,9 +72,9 @@ function ProjectCard({ project }: { project: ArchiveProject }) {
           {project.buyUrl ? <a href={project.buyUrl} target="_blank" rel="noreferrer">Buy Template ↗</a> : null}
         </div>
       </div>
-    </article>
+    </motion.article>
     <ProjectStar id={project.slug}/>
-  </div>;
+  </motion.div>;
 }
 
 export function ProjectArchive({ projects }: { projects: Project[] }) {
@@ -88,7 +89,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
       {filters.map(([value, label]) => <button className={active === value ? 'active' : ''} type="button" onClick={() => setActive(value)} aria-pressed={active === value} key={value}>{label}</button>)}
     </nav>
     {visible.length
-      ? <section className="projectGrid" aria-live="polite">{visible.map(project => <ProjectCard project={project} key={project.slug}/>)}</section>
+      ? <motion.section className="projectGrid" layout aria-live="polite"><AnimatePresence mode="popLayout">{visible.map(project => <ProjectCard project={project} key={project.slug}/>)}</AnimatePresence></motion.section>
       : <section className="projectFilterEmpty" aria-live="polite"><h2>No published projects here yet.</h2><p>This category will appear as verified work is added through the CMS.</p></section>}
   </>;
 }

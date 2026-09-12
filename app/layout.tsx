@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import './layout-repair.css';
+import './motion-system.css';
 import { SiteShell } from '@/components/SiteShell';
 import { TechMarqueeEnhancer } from '@/components/TechMarqueeEnhancer';
 import { site } from '@/data/site';
