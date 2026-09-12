@@ -18,7 +18,7 @@ const dashboardItems = [
   { label: 'Media Library', description: 'Upload reusable project and content images.', icon: Images, href: '/admin/media' },
   { label: 'Analytics', description: 'Review anonymous visits, pages and useful actions.', icon: BarChart3, href: '/admin/analytics' },
   { label: 'Professional Content', description: 'Manage capabilities, skills, services and experience.', icon: BriefcaseBusiness, href: '/admin/professional' },
-  { label: 'Site Settings', description: 'Update public identity, links and SEO defaults.', icon: Settings, href: '/admin/settings' },
+  { label: 'Site Settings', description: 'Update your résumé, public links and SEO defaults.', icon: Settings, href: '/admin/settings' },
 ];
 
 export default async function AdminPage() {
