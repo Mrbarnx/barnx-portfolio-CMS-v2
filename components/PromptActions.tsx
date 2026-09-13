@@ -17,6 +17,7 @@ export function PromptActions({prompt,download}:{prompt:string;download:string})
 
   return <div className="promptActions">
     <button className="button black" type="button" onClick={copyPrompt}>{copied?'Copied ✓':'Copy prompt'}</button>
-    <a className="button" href={download} download>Download .md ↓</a>
+    {download?<a className="button" href={download} target="_blank" rel="noreferrer">Preview file ↗</a>:null}
+    {download?<a className="button" href={download} download>Download file ↓</a>:null}
   </div>;
 }

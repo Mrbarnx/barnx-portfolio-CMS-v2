@@ -10,7 +10,7 @@ import styles from '../content.module.css';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Studio CMS | Barnx Admin', robots: { index: false, follow: false } };
 
-type Query = { error?: string; import?: string };
+type Query = { error?: string; import?: string; deleted?: string };
 
 export default async function StudioAdminPage({ searchParams }: { searchParams: Promise<Query> }) {
   const { supabase } = await requireCmsAdmin();
@@ -20,6 +20,7 @@ export default async function StudioAdminPage({ searchParams }: { searchParams: 
     supabase.from('prompt_resources').select('id,slug,title,category,published,updated_at').order('updated_at', { ascending: false }),
   ]);
   const query = await searchParams;
+  const visibleResources = (resources ?? []).filter((item) => item.slug !== 'prompt-library');
 
   return <main className={styles.page}><div className={styles.wrap}>
     <Link className={styles.back} href="/admin">← Admin home</Link>
@@ -40,10 +41,13 @@ export default async function StudioAdminPage({ searchParams }: { searchParams: 
     {query.import === 'resources' ? <p className={styles.notice}>Current Studio resources imported successfully.</p> : null}
     {query.import === 'prompts' ? <p className={styles.notice}>Current prompts imported successfully.</p> : null}
     {query.import === 'unchanged' ? <p className={styles.notice}>Everything in that section is already imported.</p> : null}
+    {query.deleted === 'resource' ? <p className={styles.notice}>Resource deleted.</p> : null}
+    {query.deleted === 'prompt' ? <p className={styles.notice}>Prompt deleted.</p> : null}
+    {query.deleted === 'failed' ? <p className={styles.error}>The item could not be deleted.</p> : null}
 
     <div className={styles.tabs}>
       <a href="#categories">Categories ({categories?.length || 0})</a>
-      <a href="#resources">Resources ({resources?.length || 0})</a>
+      <a href="#resources">Resources ({visibleResources.length})</a>
       <a href="#prompts">Prompts ({prompts?.length || 0})</a>
       <Link href="/admin/learning-paths">Learning paths</Link>
     </div>
@@ -59,8 +63,8 @@ export default async function StudioAdminPage({ searchParams }: { searchParams: 
     </section>
 
     <section id="resources" style={{ marginTop: 36 }}>
-      <div className={styles.header}><div><h2>Studio resources</h2><p>Individual downloads, components, workflows and templates.</p></div>{!resources?.length ? <form action={importCurrentStudioResources}><button className={styles.secondary}>Import current resources</button></form> : null}</div>
-      <div className={styles.grid}>{resources?.map(item => <article className={styles.card} key={item.id}>
+      <div className={styles.header}><div><h2>Studio resources</h2><p>Downloads, components, workflows, templates and open-source projects.</p></div>{!visibleResources.length ? <form action={importCurrentStudioResources}><button className={styles.secondary}>Import current resources</button></form> : null}</div>
+      <div className={styles.grid}>{visibleResources.map(item => <article className={styles.card} key={item.id}>
         <div className={styles.badges}><span className={item.published ? styles.live : ''}>{item.published ? 'Published' : 'Draft'}</span><span>{item.resource_type.replaceAll('_', ' ')}</span></div>
         <h3>{item.title}</h3><small>/{item.slug}</small>
         <div className={styles.actions}><Link className={styles.secondary} href={`/admin/studio/resources/${item.id}`}>Edit resource</Link></div>
