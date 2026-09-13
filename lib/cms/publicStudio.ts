@@ -30,8 +30,8 @@ export const getPublishedStudioCategories = cache(async (): Promise<StudioCatego
   if (!hasSupabaseConfig()) return fallbackCategories;
   try {
     const { data, error } = await client().from('studio_categories').select('*').eq('published', true).order('sort_order');
-    if (error || !data?.length) return fallbackCategories;
-    return data.map((row) => ({
+    if (error) throw error;
+    return (data ?? []).map((row) => ({
       slug: row.slug,
       href: row.href || `/barnx-studio/categories/${row.slug}`,
       icon: row.icon,
@@ -70,11 +70,9 @@ function mapStudioResource(row: Record<string, any>): PublicStudioResource {
 export const getPublishedStudioResources = cache(async (): Promise<PublicStudioResource[]> => {
   if (!hasSupabaseConfig()) return fallbackResources.map(fallbackResource);
   try {
-    const { data, error } = await client().from('studio_resources').select('*').eq('published', true).order('featured', { ascending: false }).order('sort_order');
+    const { data, error } = await client().from('studio_resources').select('*').eq('published', true).neq('slug', 'prompt-library').order('featured', { ascending: false }).order('sort_order');
     if (error) throw error;
-    const cms = (data ?? []).map(mapStudioResource);
-    const cmsSlugs = new Set(cms.map((item) => item.slug));
-    return [...cms, ...fallbackResources.filter((item) => !cmsSlugs.has(item.slug)).map(fallbackResource)];
+    return (data ?? []).map(mapStudioResource);
   } catch { return fallbackResources.map(fallbackResource); }
 });
 
@@ -103,7 +101,8 @@ export async function getPublishedStudioResourcesForCategory(
       .eq('published', true)
       .maybeSingle();
 
-    if (categoryError || !category) return fallback;
+    if (categoryError) throw categoryError;
+    if (!category) return [];
 
     const { data, error } = await db
       .from('studio_resources')
@@ -113,11 +112,8 @@ export async function getPublishedStudioResourcesForCategory(
       .order('featured', { ascending: false })
       .order('sort_order');
 
-    if (error) return fallback;
-
-    const cms = (data ?? []).map(mapStudioResource);
-    const cmsSlugs = new Set(cms.map((item) => item.slug));
-    return [...cms, ...fallback.filter((item) => !cmsSlugs.has(item.slug))];
+    if (error) throw error;
+    return (data ?? []).filter((row) => row.slug !== 'prompt-library').map(mapStudioResource);
   } catch {
     return fallback;
   }
@@ -128,9 +124,7 @@ export const getPublishedPrompts = cache(async (): Promise<PublicPrompt[]> => {
   try {
     const { data, error } = await client().from('prompt_resources').select('*').eq('published', true).order('featured', { ascending: false }).order('sort_order');
     if (error) throw error;
-    const cms = (data ?? []).map((row) => ({ number: row.number_label, slug: row.slug, title: row.title, category: row.category, short: row.short_summary, description: row.description, bestFor: row.best_for, tools: row.tools, tutorial: row.tutorial_steps, download: row.download_path ?? '', promptText: row.prompt_text ?? '' }));
-    const cmsSlugs = new Set(cms.map((item) => item.slug));
-    return [...cms, ...fallbackPrompts.filter((item) => !cmsSlugs.has(item.slug)).map((item) => ({ ...item, promptText: '' }))];
+    return (data ?? []).map((row) => ({ number: row.number_label, slug: row.slug, title: row.title, category: row.category, short: row.short_summary, description: row.description, bestFor: row.best_for, tools: row.tools, tutorial: row.tutorial_steps, download: row.download_path ?? '', promptText: row.prompt_text ?? '' }));
   } catch { return fallbackPrompts.map((item) => ({ ...item, promptText: '' })); }
 });
 

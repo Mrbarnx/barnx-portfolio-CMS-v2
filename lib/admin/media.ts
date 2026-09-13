@@ -1,6 +1,16 @@
 export const CMS_MEDIA_BUCKET = 'cms-media';
 export const MAX_MEDIA_SIZE = 8 * 1024 * 1024;
+export const MAX_DOCUMENT_SIZE = 15 * 1024 * 1024;
 export const acceptedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'] as const;
+export const acceptedDocumentTypes = [
+  'application/pdf',
+  'text/markdown',
+  'text/plain',
+  'application/json',
+  'application/zip',
+  'application/x-zip-compressed',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+] as const;
 
 export type MediaAsset = {
   id: string;
@@ -19,4 +29,8 @@ export type MediaAsset = {
 export function mediaPublicUrl(supabaseUrl: string, storagePath: string) {
   const encodedPath = storagePath.split('/').map(encodeURIComponent).join('/');
   return `${supabaseUrl}/storage/v1/object/public/${CMS_MEDIA_BUCKET}/${encodedPath}`;
+}
+
+export function isImageAsset(asset: Pick<MediaAsset, 'mime_type'>) {
+  return asset.mime_type.startsWith('image/');
 }

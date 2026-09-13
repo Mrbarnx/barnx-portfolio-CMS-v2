@@ -18,11 +18,11 @@ const checked = (data: FormData, key: string) => data.get(key) === 'on';
 const publishedAt = (published: boolean) => published ? new Date().toISOString() : null;
 
 async function persistStudioResource(data: FormData, publish: boolean) {
-  const schema = z.object({ id: z.string(), title: text(), slug, resource_type: z.enum(['guide','component','workflow','prompt_library','template','blueprint','visual_asset','other']), category_id: z.string(), icon: z.string(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), external_url: url, sort_order: z.coerce.number().int().min(0) });
+  const schema = z.object({ id: z.string(), title: text(), slug, resource_type: z.enum(['guide','component','workflow','open_source_project','template','blueprint','visual_asset','other']), category_id: z.string(), icon: z.string(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), document_url: z.string(), external_url: url, sort_order: z.coerce.number().int().min(0) });
   const parsed = schema.safeParse(Object.fromEntries(data));
   if (!parsed.success) redirect(`/admin/studio?error=resource`);
   const { supabase, user } = await requireCmsAdmin();
-  const payload = { ...parsed.data, id: undefined, category_id: parsed.data.category_id || null, includes: lines(data.get('includes')), technologies: lines(data.get('technologies')), is_free: checked(data,'is_free'), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('download_path')), external_url: nullable(data.get('external_url')) };
+  const payload = { ...parsed.data, id: undefined, document_url: undefined, category_id: parsed.data.category_id || null, includes: lines(data.get('includes')), technologies: lines(data.get('technologies')), is_free: checked(data,'is_free'), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('document_url')) ?? nullable(data.get('download_path')), external_url: nullable(data.get('external_url')) };
   const query = parsed.data.id ? supabase.from('studio_resources').update(payload).eq('id', parsed.data.id) : supabase.from('studio_resources').insert({ ...payload, created_by: user.id });
   const { data: saved, error } = await query.select('id').single();
   if (error) redirect(`/admin/studio?error=resource-save`);
@@ -38,12 +38,21 @@ export async function publishStudioResource(data: FormData) {
   return persistStudioResource(data, true);
 }
 
+export async function deleteStudioResource(data: FormData) {
+  const id=String(data.get('id')??'');if(!id)redirect('/admin/studio?deleted=failed');
+  const {supabase}=await requireCmsAdmin();
+  const {data:row}=await supabase.from('studio_resources').select('slug').eq('id',id).maybeSingle();
+  const {error}=await supabase.from('studio_resources').delete().eq('id',id);
+  revalidatePath('/admin/studio');revalidatePath('/barnx-studio');if(row?.slug)revalidatePath(`/barnx-studio/${row.slug}`);
+  redirect(`/admin/studio?deleted=${error?'failed':'resource'}`);
+}
+
 async function persistPromptResource(data: FormData, publish: boolean) {
-  const schema = z.object({ id: z.string(), number_label: z.string(), title: text(), slug, category: text(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), source_path: z.string(), prompt_text: text(10), sort_order: z.coerce.number().int().min(0) });
+  const schema = z.object({ id: z.string(), number_label: z.string(), title: text(), slug, category: text(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), document_url: z.string(), source_path: z.string(), prompt_text: text(10), sort_order: z.coerce.number().int().min(0) });
   const parsed = schema.safeParse(Object.fromEntries(data));
   if (!parsed.success) redirect('/admin/studio?error=prompt');
   const { supabase, user } = await requireCmsAdmin();
-  const payload = { ...parsed.data, id: undefined, tools: lines(data.get('tools')), tutorial_steps: lines(data.get('tutorial_steps')), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('download_path')), source_path: nullable(data.get('source_path')) };
+  const payload = { ...parsed.data, id: undefined, document_url: undefined, tools: lines(data.get('tools')), tutorial_steps: lines(data.get('tutorial_steps')), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('document_url')) ?? nullable(data.get('download_path')), source_path: nullable(data.get('source_path')) };
   const query = parsed.data.id ? supabase.from('prompt_resources').update(payload).eq('id', parsed.data.id) : supabase.from('prompt_resources').insert({ ...payload, created_by: user.id });
   const { data: saved, error } = await query.select('id').single();
   if (error) redirect('/admin/studio?error=prompt-save');
@@ -57,6 +66,15 @@ export async function savePromptResourceDraft(data: FormData) {
 
 export async function publishPromptResource(data: FormData) {
   return persistPromptResource(data, true);
+}
+
+export async function deletePromptResource(data: FormData) {
+  const id=String(data.get('id')??'');if(!id)redirect('/admin/studio?deleted=failed');
+  const {supabase}=await requireCmsAdmin();
+  const {data:row}=await supabase.from('prompt_resources').select('slug').eq('id',id).maybeSingle();
+  const {error}=await supabase.from('prompt_resources').delete().eq('id',id);
+  revalidatePath('/admin/studio');revalidatePath('/barnx-studio/prompts');if(row?.slug)revalidatePath(`/barnx-studio/prompts/${row.slug}`);
+  redirect(`/admin/studio?deleted=${error?'failed':'prompt'}`);
 }
 
 export async function saveLearningPath(data: FormData) {
@@ -87,6 +105,30 @@ export async function saveLearningLesson(data: FormData) {
   const query=id?supabase.from('learning_lessons').update(payload).eq('id',id):supabase.from('learning_lessons').insert(payload); const {error}=await query;
   revalidatePath(`/admin/learning-paths/${pathId}`); revalidatePath('/barnx-studio/learning-paths');
   redirect(`/admin/learning-paths/${pathId}?lesson=${error?'failed':'saved'}`);
+}
+
+export async function importDockerFundamentals() {
+  const {supabase,user}=await requireCmsAdmin();
+  const {data:existing}=await supabase.from('learning_paths').select('id').eq('slug','docker-fundamentals').maybeSingle();
+  if(existing)redirect(`/admin/learning-paths/${existing.id}`);
+  const {data:path,error:pathError}=await supabase.from('learning_paths').insert({slug:'docker-fundamentals',title:'Docker Fundamentals',summary:'A practical beginner path from containers and images to Compose and production habits.',description:'Learn Docker through a structured, hands-on curriculum covering the everyday workflow used to package and run applications consistently.',difficulty:'beginner',estimated_duration:'4 weeks',featured:true,published:true,published_at:new Date().toISOString(),sort_order:0,created_by:user.id}).select('id').single();
+  if(pathError||!path)redirect('/admin/learning-paths?import=failed');
+  const curriculum=[
+    ['Container foundations','Understand the ideas behind containers.',['What containers solve','Images and containers','Install and verify Docker']],
+    ['Building images','Package an application predictably.',['Dockerfile essentials','Build context and layers','Tags and image hygiene']],
+    ['Running real applications','Connect storage, networks and services.',['Ports and environment variables','Volumes and persistent data','Docker networking']],
+    ['Compose and production habits','Operate multi-service projects safely.',['Docker Compose','Debugging and logs','Production checklist']],
+  ] as const;
+  for(let moduleIndex=0;moduleIndex<curriculum.length;moduleIndex+=1){
+    const [title,summary,lessonTitles]=curriculum[moduleIndex];
+    const {data:module,error:moduleError}=await supabase.from('learning_modules').insert({learning_path_id:path.id,title,summary,published:true,sort_order:moduleIndex}).select('id').single();
+    if(moduleError||!module)redirect(`/admin/learning-paths/${path.id}?error=module`);
+    const lessons=lessonTitles.map((lessonTitle,lessonIndex)=>({learning_module_id:module.id,slug:lessonTitle.toLowerCase().replaceAll(/[^a-z0-9]+/g,'-').replaceAll(/^-|-$/g,''),title:lessonTitle,summary:`Learn ${lessonTitle.toLowerCase()} with practical Docker examples.`,body_markdown:`## ${lessonTitle}\n\nUse this lesson to understand the concept, try the commands locally, and record what changes in the container workflow.\n\n### Practice\n\nBuild or run a small example, inspect the result, then explain the outcome in your own words.`,duration_minutes:30,published:true,sort_order:lessonIndex}));
+    const {error:lessonError}=await supabase.from('learning_lessons').insert(lessons);
+    if(lessonError)redirect(`/admin/learning-paths/${path.id}?error=lesson`);
+  }
+  revalidatePath('/admin/learning-paths');revalidatePath('/barnx-studio/learning-paths');
+  redirect(`/admin/learning-paths/${path.id}?saved=published`);
 }
 
 export async function saveImpactStory(data: FormData) {
@@ -122,7 +164,7 @@ export async function importCurrentStudioResources() {
   const existingSlugs = new Set((existing ?? []).map((item) => item.slug));
   const typeMap: Record<string, string> = {
     Guide: 'guide', Component: 'component', Workflow: 'workflow',
-    'Prompt Library': 'prompt_library', Template: 'template',
+    Template: 'template',
   };
   const rows = fileResources.filter((item) => !existingSlugs.has(item.slug)).map((item, index) => ({
     slug: item.slug, title: item.title, resource_type: typeMap[item.type] ?? 'other', icon: item.icon,

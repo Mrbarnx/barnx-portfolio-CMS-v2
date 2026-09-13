@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { CMS_MEDIA_BUCKET } from '@/lib/admin/media';
+import { CMS_MEDIA_BUCKET, mediaPublicUrl } from '@/lib/admin/media';
+import { getSupabaseConfig } from '@/lib/supabase/config';
 import { requireCmsAdmin } from '@/lib/admin/requireCmsAdmin';
 
 export async function deleteMediaAsset(formData: FormData) {
@@ -18,12 +19,15 @@ export async function deleteMediaAsset(formData: FormData) {
 
   if (readError || !asset) redirect('/admin/media?deleted=failed');
 
+  const assetUrl = mediaPublicUrl(getSupabaseConfig().url, asset.storage_path);
   const referenceChecks = await Promise.all([
     supabase.from('project_media').select('project_id').eq('media_id', id).limit(1),
     supabase.from('impact_evidence').select('id').eq('media_id', id).limit(1),
     supabase.from('studio_resources').select('id').eq('cover_media_id', id).limit(1),
     supabase.from('prompt_resources').select('id').eq('cover_media_id', id).limit(1),
     supabase.from('learning_paths').select('id').eq('cover_media_id', id).limit(1),
+    supabase.from('studio_resources').select('id').eq('download_path', assetUrl).limit(1),
+    supabase.from('prompt_resources').select('id').eq('download_path', assetUrl).limit(1),
   ]);
 
   if (referenceChecks.some(({ data, error }) => error || (data?.length ?? 0) > 0)) {
