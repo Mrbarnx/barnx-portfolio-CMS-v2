@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Project, ProjectType } from '@/data/content';
 import { ProjectStar } from '@/components/ProjectStar';
+import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-projects';
 
 type Filter = 'all' | ProjectType | 'case_studies';
-type ArchiveProject = Project & { href?: string };
-
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
   ['public_build', 'Public Builds'],
@@ -17,28 +16,20 @@ const filters: Array<[Filter, string]> = [
   ['template', 'Templates'],
 ];
 
-const permanentProjects: ArchiveProject[] = [
-  {
-    slug: 'barnx-portfolio-cms', title: 'Barnx Portfolio CMS', display: 'BARNX CMS', category: 'Full-Stack CMS', status: 'Production',
-    short: 'Authenticated content management, media storage, publishing workflows, analytics, privacy controls and automated deployments.',
-    overview: '', visualSubtitle: 'Portfolio content and publishing system', tone: 'black', problem: '', solution: '', role: 'Software Engineer', features: [],
-    tech: ['Next.js', 'Supabase', 'PostgreSQL', 'Vercel'], challenges: '', lessons: '', github: 'https://github.com/Mrbarnx/barnx-portfolio-CMS-v2',
-    projectType: 'public_build', caseStudyEnabled: true, href: '/projects/barnx-portfolio-cms',
-  },
-  {
-    slug: 'automation-systems', title: 'AI Automation & Software Systems', display: 'AUTOMATION', category: 'Software Systems', status: 'In development',
-    short: 'Business systems and demos designed around lead response, support, CRM and repetitive operational work.',
-    overview: '', visualSubtitle: 'Lead response · Support · CRM · Operations', tone: 'black', problem: '', solution: '', role: 'Software Engineer', features: [],
-    tech: ['Automation', 'AI', 'APIs', 'Workflows'], challenges: '', lessons: '', projectType: 'public_build', caseStudyEnabled: true,
-    href: '/barnx-studio/automation-systems',
-  },
-];
+const filterIntroductions: Record<Filter, string> = {
+  all: 'Explore public builds, client work, detailed case studies and templates. Each project shows the proof that is safe and useful to share.',
+  public_build: 'Personal products and experiments I build publicly to explore ideas, solve practical problems and demonstrate how I design and engineer software.',
+  client_work: 'Selected projects completed for clients who have permitted me to showcase the work, my contribution and the resulting solution.',
+  case_studies: 'Detailed breakdowns of selected projects, covering the problem, product decisions, technical approach, challenges and final outcome.',
+  template: 'Polished, reusable website experiences for businesses and creators who want a strong starting point without building from scratch.',
+  private_project: 'Selected private product work presented through the proof that is safe and appropriate to share.',
+};
 
 function typeLabel(type: ProjectType) {
   return { public_build: 'Public Build', client_work: 'Client Work', private_project: 'Private Project', template: 'Template' }[type];
 }
 
-function ProjectCard({ project }: { project: ArchiveProject }) {
+export function ProjectCard({ project }: { project: ArchiveProject }) {
   const type = project.projectType ?? 'public_build';
   const caseHref = project.href ?? `/projects/${project.slug}`;
   const visualHref = project.caseStudyEnabled !== false ? caseHref : project.live ?? project.buyUrl ?? project.github;
@@ -79,12 +70,15 @@ function ProjectCard({ project }: { project: ArchiveProject }) {
 
 export function ProjectArchive({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Filter>('all');
-  const allProjects = [...permanentProjects, ...projects.filter(project => !permanentProjects.some(item => item.slug === project.slug))];
+  const allProjects = mergePermanentProjects(projects);
   const visible = allProjects.filter(project => active === 'all'
     || active === 'case_studies' && project.caseStudyEnabled !== false
     || (project.projectType ?? 'public_build') === active);
 
   return <>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.p className="projectFilterIntro" key={active} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-6}} transition={{duration:.22}} aria-live="polite">{filterIntroductions[active]}</motion.p>
+    </AnimatePresence>
     <nav className="projectFilters" aria-label="Filter projects">
       {filters.map(([value, label]) => <button className={active === value ? 'active' : ''} type="button" onClick={() => setActive(value)} aria-pressed={active === value} key={value}>{label}</button>)}
     </nav>
