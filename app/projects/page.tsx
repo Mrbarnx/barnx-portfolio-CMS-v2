@@ -21,7 +21,6 @@ export default async function ProjectsPage() {
     <section className="pageHero">
       <span className="eyebrow">PROJECT ARCHIVE</span>
       <h1>Products, interfaces<br/>and intelligent systems.</h1>
-      <p>Explore public builds, client work, detailed case studies and templates. Each project shows the proof that is safe and useful to share.</p>
     </section>
     <ProjectArchive projects={projects} />
   </main>;
