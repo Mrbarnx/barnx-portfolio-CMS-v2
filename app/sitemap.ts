@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getPublishedProjects } from '@/lib/cms/publicProjects';
 import { site } from '@/data/site';
+import { serviceShowrooms } from '@/data/service-showrooms';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await getPublishedProjects();
@@ -34,5 +35,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...pages, ...projectPages];
+  const servicePages: MetadataRoute.Sitemap = serviceShowrooms.map((service) => ({
+    url: `${site.url}/services/${service.slug}`,
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }));
+
+  return [...pages, ...servicePages, ...projectPages];
 }
