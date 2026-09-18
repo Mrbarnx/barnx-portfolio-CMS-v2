@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     '',
     '/projects',
+    '/resume',
     '/projects/barnx-portfolio-cms',
     '/capabilities',
     '/experience',
