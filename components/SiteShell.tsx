@@ -23,9 +23,9 @@ export function SiteShell({children,settings}:{children:React.ReactNode;settings
       <nav className="nav">
         <Logo/>
         <div className="navLinks">{nav.map(([n,h])=><Link className={(h==='/'?path===h:path.startsWith(h))?'active':''} href={h} key={h}>{n}</Link>)}</div>
-        <div className="navRight"><a className="resume" href={settings.resumeUrl} download>Résumé ↓</a><button className="mobileButton" onClick={()=>setOpen(!open)} aria-label="Toggle navigation">{open?<Close/>:<Menu/>}</button></div>
+        <div className="navRight"><Link className="resume" href="/resume">Résumé ↓</Link><button className="mobileButton" onClick={()=>setOpen(!open)} aria-label="Toggle navigation">{open?<Close/>:<Menu/>}</button></div>
       </nav>
-      {open&&<div className="mobileMenu">{nav.map(([n,h])=><Link onClick={()=>setOpen(false)} href={h} key={h}>{n}</Link>)}<a href={settings.resumeUrl} download>Download résumé ↓</a></div>}
+      {open&&<div className="mobileMenu">{nav.map(([n,h])=><Link onClick={()=>setOpen(false)} href={h} key={h}>{n}</Link>)}<Link onClick={()=>setOpen(false)} href="/resume">View résumé ↓</Link></div>}
     </header>
     {children}
     <footer>
@@ -42,7 +42,7 @@ export function SiteShell({children,settings}:{children:React.ReactNode;settings
           </div>
         </div>
         <div><b>Navigation</b><Link href="/">Home</Link><Link href="/projects">Projects</Link><Link href="/capabilities">Capabilities</Link><Link href="/experience">Experience</Link><Link href="/impact">Impact</Link><Link href="/barnx-studio">Barnx Studio</Link></div>
-        <div><b>Resources</b><a href={settings.resumeUrl} download>Résumé</a><Link href="/barnx-studio">Free resources</Link><a href={`mailto:${settings.email}`}>Consultation</a></div>
+        <div><b>Resources</b><Link href="/resume">Résumé</Link><Link href="/barnx-studio">Free resources</Link><a href={`mailto:${settings.email}`}>Consultation</a></div>
         <div><b>Let's connect</b><a href={`mailto:${settings.email}`}>{settings.email}</a><span>{settings.location}</span></div>
       </div>
       <div className="copyright">© 2026 Barnx. Built with Next.js.</div>
