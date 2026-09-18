@@ -7,6 +7,7 @@ import { mergePermanentProjects } from '@/data/permanent-projects';
 import { getServiceShowroom, projectsForService, serviceShowrooms } from '@/data/service-showrooms';
 import { getPublishedProjects } from '@/lib/cms/publicProjects';
 import styles from './service.module.css';
+import { WebDesignOutcomePage } from './WebDesignOutcomePage';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
   const projects = projectsForService(service, mergePermanentProjects(await getPublishedProjects()));
   const requestHref = `mailto:mrbarnx@gmail.com?subject=${encodeURIComponent(`${service.title} service request`)}`;
+
+  if (service.slug === 'web-design-development') return <WebDesignOutcomePage projects={projects} requestHref={requestHref}/>;
 
   return <main className={styles.page}>
     <Link className={styles.back} href="/capabilities">← All services</Link>
