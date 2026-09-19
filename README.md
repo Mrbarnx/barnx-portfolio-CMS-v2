@@ -2,7 +2,9 @@
 
 A production portfolio and custom content-management system built with Next.js and Supabase. It gives Barnabas Mikel one protected workspace for managing projects, professional positioning, media, impact stories, developer resources, site settings and privacy-conscious analytics.
 
-**Live portfolio:** [barnx-portfolio-v2.vercel.app](https://barnx-portfolio-v2.vercel.app)
+**Live portfolio:** [barnx-portfolio-v2](https://barnx.indevs.in)
+
+**fallback portfolio:** [barnx-portfolio-v2.vercel.app](https://barnx-portfolio-v2.vercel.app)
 
 ## What it proves
 
