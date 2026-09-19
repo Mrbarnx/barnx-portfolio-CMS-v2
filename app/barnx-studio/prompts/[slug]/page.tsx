@@ -4,6 +4,7 @@ import { PromptActions } from '@/components/PromptActions';
 import { getPublishedPrompt } from '@/lib/cms/publicStudio';
 import { readPromptSource } from '@/lib/cms/promptFiles';
 import styles from '../prompts.module.css';
+import previewStyles from '../promptPreview.module.css';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,9 @@ export default async function PromptDetail({params}:{params:Promise<{slug:string
       <p>{prompt.description}</p>
       <div className={styles.actions}><PromptActions prompt={promptText} download={prompt.download}/></div>
     </section>
+
+    {prompt.previewType==='image'&&prompt.previewImageUrl?<figure className={previewStyles.preview}><img src={prompt.previewImageUrl} alt={prompt.previewImageAlt||`${prompt.title} preview`}/><figcaption>Prompt output preview</figcaption></figure>:null}
+    {prompt.previewType==='video'&&prompt.previewVideoUrl?<figure className={previewStyles.preview}><video controls preload="metadata" poster={prompt.previewImageUrl||undefined}><source src={prompt.previewVideoUrl}/></video><figcaption>Prompt output preview</figcaption></figure>:null}
 
     <section className={`caseColumns ${styles.overview}`}>
       <div><span className="eyebrow">WHAT IT DOES</span><p>{prompt.short}</p></div>

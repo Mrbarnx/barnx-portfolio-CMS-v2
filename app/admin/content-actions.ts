@@ -48,11 +48,12 @@ export async function deleteStudioResource(data: FormData) {
 }
 
 async function persistPromptResource(data: FormData, publish: boolean) {
-  const schema = z.object({ id: z.string(), number_label: z.string(), title: text(), slug, category: text(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), document_url: z.string(), source_path: z.string(), prompt_text: text(10), sort_order: z.coerce.number().int().min(0) });
+  const schema = z.object({ id: z.string(), number_label: z.string(), title: text(), slug, category_id: z.string().uuid(), short_summary: text(10), description: text(10), best_for: z.string(), download_path: z.string(), document_url: z.string(), source_path: z.string(), prompt_text: text(10), preview_type:z.enum(['none','image','video']), cover_media_id:z.string(), preview_video_url:url, sort_order: z.coerce.number().int().min(0) });
   const parsed = schema.safeParse(Object.fromEntries(data));
   if (!parsed.success) redirect('/admin/studio?error=prompt');
   const { supabase, user } = await requireCmsAdmin();
-  const payload = { ...parsed.data, id: undefined, document_url: undefined, tools: lines(data.get('tools')), tutorial_steps: lines(data.get('tutorial_steps')), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('document_url')) ?? nullable(data.get('download_path')), source_path: nullable(data.get('source_path')) };
+  const {data:category}=await supabase.from('prompt_categories').select('name').eq('id',parsed.data.category_id).single();
+  const payload = { ...parsed.data, id: undefined, document_url: undefined, category:category?.name??'Code', cover_media_id:nullable(data.get('cover_media_id')), preview_video_url:nullable(data.get('preview_video_url')), tools: lines(data.get('tools')), tutorial_steps: lines(data.get('tutorial_steps')), featured: checked(data,'featured'), published: publish, published_at: publishedAt(publish), download_path: nullable(data.get('document_url')) ?? nullable(data.get('download_path')), source_path: nullable(data.get('source_path')) };
   const query = parsed.data.id ? supabase.from('prompt_resources').update(payload).eq('id', parsed.data.id) : supabase.from('prompt_resources').insert({ ...payload, created_by: user.id });
   const { data: saved, error } = await query.select('id').single();
   if (error) redirect('/admin/studio?error=prompt-save');
@@ -75,6 +76,15 @@ export async function deletePromptResource(data: FormData) {
   const {error}=await supabase.from('prompt_resources').delete().eq('id',id);
   revalidatePath('/admin/studio');revalidatePath('/barnx-studio/prompts');if(row?.slug)revalidatePath(`/barnx-studio/prompts/${row.slug}`);
   redirect(`/admin/studio?deleted=${error?'failed':'prompt'}`);
+}
+
+export async function savePromptCategory(data:FormData){
+  const parsed=z.object({id:z.string(),name:text(),slug,description:text(10),icon:text(1),sort_order:z.coerce.number().int().min(0)}).safeParse(Object.fromEntries(data));
+  if(!parsed.success)redirect('/admin/studio?error=prompt-category');
+  const {supabase}=await requireCmsAdmin();const payload={...parsed.data,id:undefined,published:checked(data,'published')};
+  const query=parsed.data.id?supabase.from('prompt_categories').update(payload).eq('id',parsed.data.id):supabase.from('prompt_categories').insert(payload);
+  const {data:saved,error}=await query.select('id').single();if(error)redirect('/admin/studio?error=prompt-category-save');
+  revalidatePath('/admin/studio');revalidatePath('/barnx-studio/prompts');redirect(`/admin/studio/prompt-categories/${saved.id}?saved=1`);
 }
 
 export async function saveLearningPath(data: FormData) {
@@ -181,11 +191,13 @@ export async function importCurrentStudioResources() {
 
 export async function importCurrentPrompts() {
   const { supabase, user } = await requireCmsAdmin();
+  const {data:codeCategory}=await supabase.from('prompt_categories').select('id').eq('slug','code').maybeSingle();
+  if(!codeCategory)redirect('/admin/studio?error=prompt-category');
   const { data: existing, error: readError } = await supabase.from('prompt_resources').select('slug');
   if (readError) redirect('/admin/studio?import=failed');
   const existingSlugs = new Set((existing ?? []).map((item) => item.slug));
   const rows = filePrompts.filter((item) => !existingSlugs.has(item.slug)).map((item, index) => ({
-    number_label: item.number, slug: item.slug, title: item.title, category: item.category,
+    number_label: item.number, slug: item.slug, title: item.title, category: item.category, category_id:codeCategory.id,
     short_summary: item.short, description: item.description, best_for: item.bestFor,
     tools: item.tools, tutorial_steps: item.tutorial, download_path: item.download,
     source_path: item.sourceFile, prompt_text: readPromptSource(item.slug),

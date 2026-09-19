@@ -19,8 +19,20 @@ export type PublicStudioResource = {
 
 export type PublicPrompt = {
   number: string; slug: string; title: string; category: string; short: string; description: string;
-  bestFor: string; tools: string[]; tutorial: string[]; download: string; promptText: string;
+  categorySlug: string; bestFor: string; tools: string[]; tutorial: string[]; download: string; promptText: string;
+  previewType: 'none'|'image'|'video'; previewImageUrl: string; previewImageAlt: string; previewVideoUrl: string;
 };
+export type PublicPromptCategory = { name:string; slug:string; description:string; icon:string };
+
+const fallbackPromptCategories:PublicPromptCategory[]=[
+  {name:'Code',slug:'code',description:'Prompts for planning, building, reviewing and improving software.',icon:'</>'},
+  {name:'AI Agents',slug:'ai-agents',description:'Prompts for designing capable agents, tools and multi-step workflows.',icon:'◎'},
+  {name:'Web Design',slug:'web-design',description:'Prompts for interfaces, landing pages and thoughtful digital experiences.',icon:'◫'},
+  {name:'Image Creation',slug:'image-creation',description:'Prompts for art direction, product visuals and image generation.',icon:'◇'},
+  {name:'Video Creation',slug:'video-creation',description:'Prompts for concepts, scenes, motion and generated video.',icon:'▶'},
+  {name:'Business & Automation',slug:'business-automation',description:'Prompts for practical systems, operations and repeatable workflows.',icon:'↻'},
+  {name:'Writing & Content',slug:'writing-content',description:'Prompts for clearer ideas, useful content and stronger communication.',icon:'Aa'},
+];
 
 export type PublicLesson = { id: string; slug: string; title: string; summary: string; bodyMarkdown: string; durationMinutes: number | null; videoUrl: string | null; repositoryUrl: string | null };
 export type PublicModule = { id: string; title: string; summary: string; lessons: PublicLesson[] };
@@ -120,13 +132,17 @@ export async function getPublishedStudioResourcesForCategory(
 }
 
 export const getPublishedPrompts = cache(async (): Promise<PublicPrompt[]> => {
-  if (!hasSupabaseConfig()) return fallbackPrompts.map((item) => ({ ...item, promptText: '' }));
+  const fallback=()=>fallbackPrompts.map((item) => ({...item,categorySlug:'code',promptText:'',previewType:'none' as const,previewImageUrl:'',previewImageAlt:'',previewVideoUrl:''}));
+  if (!hasSupabaseConfig()) return fallback();
   try {
-    const { data, error } = await client().from('prompt_resources').select('*').eq('published', true).order('featured', { ascending: false }).order('sort_order');
+    const { data, error } = await client().from('prompt_resources').select('*,prompt_categories(name,slug),cover:media_assets!prompt_resources_cover_media_id_fkey(storage_path,alt_text)').eq('published', true).order('featured', { ascending: false }).order('sort_order');
     if (error) throw error;
-    return (data ?? []).map((row) => ({ number: row.number_label, slug: row.slug, title: row.title, category: row.category, short: row.short_summary, description: row.description, bestFor: row.best_for, tools: row.tools, tutorial: row.tutorial_steps, download: row.download_path ?? '', promptText: row.prompt_text ?? '' }));
-  } catch { return fallbackPrompts.map((item) => ({ ...item, promptText: '' })); }
+    const {url}=getSupabaseConfig();
+    return (data ?? []).map((row) => ({number:row.number_label,slug:row.slug,title:row.title,category:row.prompt_categories?.name??row.category,categorySlug:row.prompt_categories?.slug??'code',short:row.short_summary,description:row.description,bestFor:row.best_for,tools:row.tools,tutorial:row.tutorial_steps,download:row.download_path??'',promptText:row.prompt_text??'',previewType:row.preview_type??'none',previewImageUrl:row.cover?.storage_path?`${url}/storage/v1/object/public/cms-media/${row.cover.storage_path}`:'',previewImageAlt:row.cover?.alt_text??'',previewVideoUrl:row.preview_video_url??''}));
+  } catch { return fallback(); }
 });
+
+export const getPublishedPromptCategories=cache(async():Promise<PublicPromptCategory[]>=>{if(!hasSupabaseConfig())return fallbackPromptCategories;try{const {data,error}=await client().from('prompt_categories').select('name,slug,description,icon').eq('published',true).order('sort_order');if(error)throw error;return data??[];}catch{return fallbackPromptCategories;}});
 
 export const getPublishedPrompt = cache(async (slug: string) => (await getPublishedPrompts()).find((item) => item.slug === slug) ?? null);
 

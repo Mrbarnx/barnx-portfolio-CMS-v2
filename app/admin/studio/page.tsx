@@ -14,10 +14,11 @@ type Query = { error?: string; import?: string; deleted?: string };
 
 export default async function StudioAdminPage({ searchParams }: { searchParams: Promise<Query> }) {
   const { supabase } = await requireCmsAdmin();
-  const [{ data: categories, error: categoryError }, { data: resources }, { data: prompts }] = await Promise.all([
+  const [{ data: categories, error: categoryError }, { data: resources }, { data: prompts }, {data:promptCategories,error:promptCategoryError}] = await Promise.all([
     supabase.from('studio_categories').select('id,slug,title,label,access_type,published,updated_at').order('sort_order'),
     supabase.from('studio_resources').select('id,slug,title,resource_type,published,updated_at').order('updated_at', { ascending: false }),
     supabase.from('prompt_resources').select('id,slug,title,category,published,updated_at').order('updated_at', { ascending: false }),
+    supabase.from('prompt_categories').select('id,name,slug,published').order('sort_order'),
   ]);
   const query = await searchParams;
   const visibleResources = (resources ?? []).filter((item) => item.slug !== 'prompt-library');
@@ -29,6 +30,7 @@ export default async function StudioAdminPage({ searchParams }: { searchParams: 
       <div className={styles.actions}>
         <Link className={styles.secondary} href="/admin/studio/categories/new">Add category</Link>
         <Link className={styles.secondary} href="/admin/studio/prompts/new">Add prompt</Link>
+        <Link className={styles.secondary} href="/admin/studio/prompt-categories/new">Add prompt category</Link>
         <Link className={styles.button} href="/admin/studio/resources/new">Add resource</Link>
       </div>
     </header>
@@ -72,6 +74,8 @@ export default async function StudioAdminPage({ searchParams }: { searchParams: 
     </section>
 
     <section id="prompts" style={{ marginTop: 36 }}>
+      <div className={styles.header}><div><h2>Prompt categories</h2><p>Control the filters, descriptions and empty sections on the public library.</p></div></div>
+      {promptCategoryError?<p className={styles.error}>Run the Prompt Library categories migration to manage these categories.</p>:<div className={styles.grid}>{promptCategories?.map(item=><article className={styles.card} key={item.id}><div className={styles.badges}><span className={item.published?styles.live:''}>{item.published?'Published':'Draft'}</span></div><h3>{item.name}</h3><small>/{item.slug}</small><div className={styles.actions}><Link className={styles.secondary} href={`/admin/studio/prompt-categories/${item.id}`}>Edit category</Link></div></article>)}</div>}
       <div className={styles.header}><div><h2>Prompt library</h2><p>Full copy-ready prompt entries inside the Prompt Library category.</p></div>{!prompts?.length ? <form action={importCurrentPrompts}><button className={styles.secondary}>Import current prompts</button></form> : null}</div>
       <div className={styles.grid}>{prompts?.map(item => <article className={styles.card} key={item.id}>
         <div className={styles.badges}><span className={item.published ? styles.live : ''}>{item.published ? 'Published' : 'Draft'}</span><span>{item.category}</span></div>

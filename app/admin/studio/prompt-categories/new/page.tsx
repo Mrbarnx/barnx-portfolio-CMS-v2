@@ -1,0 +1,2 @@
+import Link from 'next/link';import {requireCmsAdmin} from '@/lib/admin/requireCmsAdmin';import {PromptCategoryForm} from '../../PromptCategoryForm';import styles from '../../../content.module.css';
+export default async function NewPromptCategory(){await requireCmsAdmin();return <main className={styles.page}><div className={styles.wrap}><Link className={styles.back} href="/admin/studio">← Studio CMS</Link><header className={styles.header}><div><p className={styles.eyebrow}>New prompt category</p><h1>Add category</h1></div></header><PromptCategoryForm/></div></main>}

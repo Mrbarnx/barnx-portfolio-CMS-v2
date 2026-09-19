@@ -33,6 +33,8 @@ const hardeningPath = new URL('../supabase/migrations/202609070001_final_securit
 const hardeningSql = readFileSync(hardeningPath, 'utf8');
 const retentionPath = new URL('../supabase/migrations/202609090001_analytics_retention.sql', import.meta.url);
 const retentionSql = readFileSync(retentionPath, 'utf8');
+const promptCategoriesPath = new URL('../supabase/migrations/202609180001_prompt_library_categories.sql', import.meta.url);
+const promptCategoriesSql = readFileSync(promptCategoriesPath, 'utf8');
 
 const tables = [
   'cms_admin_users',
@@ -177,5 +179,14 @@ assert.match(projectShowcaseSql, /project_type in \('public_build', 'client_work
 assert.match(projectShowcaseSql, /case_study_enabled boolean not null default true/);
 assert.match(projectShowcaseSql, /buy_url is null or buy_url ~ '\^https:\/\/'/);
 assert.match(projectShowcaseSql, /buy_url is null or project_type = 'template'/);
+
+assert.match(promptCategoriesSql, /^-- Barnx Prompt Library categories and optional visual previews/m);
+assert.match(promptCategoriesSql, /create table if not exists public\.prompt_categories/);
+assert.match(promptCategoriesSql, /add column if not exists category_id/);
+assert.match(promptCategoriesSql, /preview_type in \('none','image','video'\)/);
+assert.match(promptCategoriesSql, /alter table public\.prompt_categories enable row level security/);
+assert.match(promptCategoriesSql, /Published prompt categories are publicly readable/);
+assert.match(promptCategoriesSql, /CMS admins can manage prompt categories/);
+assert.doesNotMatch(promptCategoriesSql, /grant\s+(insert|update|delete|all)[\s\S]{0,120}\bto anon\b/i, 'Anonymous users must never receive Prompt category mutation privileges.');
 
 console.log(`CMS schema, permissions, storage, analytics limits, 90-day retention and final hardening validation passed for ${tables.length} foundation tables.`);
