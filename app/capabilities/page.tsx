@@ -1,20 +1,12 @@
 import type {Metadata} from 'next';
 import Link from 'next/link';
-import {ArrowRight} from 'lucide-react';
-import {getProfessionalContent,publishedByOrder} from '@/lib/cms/publicProfessional';
-import {serviceShowrooms} from '@/data/service-showrooms';
-import styles from '../profile-pages.module.css';
+import {ArrowRight,BriefcaseBusiness,Code2} from 'lucide-react';
+import {getProfessionalContent} from '@/lib/cms/publicProfessional';
+import styles from './capabilities.module.css';
 export const dynamic='force-dynamic';
-export const metadata:Metadata={title:'Capabilities',description:'Barnabas Mikel’s software engineering, AI, automation and systems-integration capabilities with supporting project evidence.'};
-export default async function CapabilitiesPage(){
- const content=await getProfessionalContent();const builds=publishedByOrder(content.capabilities),skills=publishedByOrder(content.skillGroups),publishedServices=publishedByOrder(content.services),proof=publishedByOrder(content.proofLinks);
- const services=serviceShowrooms.map((service,index)=>({...service,...(publishedServices[index] ? {number:publishedServices[index].number,title:publishedServices[index].title,summary:publishedServices[index].summary} : {})}));
- return <main className={styles.page}>
- <section className={styles.hero}><span className="eyebrow">CAPABILITIES / SKILLS & SERVICES</span><h1>Software. AI.<br/>Automation.</h1><p>{content.profile.capabilitiesIntro}</p><div className={styles.heroActions}><Link className="button black" href="/projects">See project proof <ArrowRight/></Link><a className="button" href="mailto:mrbarnx@gmail.com?subject=Project%20Enquiry">Discuss a project <ArrowRight/></a></div><div className={styles.proofStrip}><div><strong>5+</strong><span>Public case studies</span></div><div><strong>42</strong><span>Healthcare screens built</span></div><div><strong>21</strong><span>SocialFi screens delivered</span></div><div><strong>3+</strong><span>Years building products</span></div></div></section>
- <section className={styles.section}><div className={styles.sectionHead}><div><span className="eyebrow">WHAT I BUILD</span><h2>Capability shaped around outcomes.</h2></div><p>Technology is useful when it creates clear, maintainable systems that solve a real problem.</p></div><div className={styles.buildGrid}>{builds.map(item=><article className={styles.buildCard} key={item.title}><small>{item.label}</small><h3>{item.title}</h3><p>{item.summary}</p></article>)}</div></section>
- <section className={styles.section}><div className={styles.sectionHead}><div><span className="eyebrow">TECHNICAL SKILLS</span><h2>Tools I know and apply.</h2></div><p>Capabilities connected to working software, professional experience and continued engineering practice.</p></div>{skills.map(group=><div className={styles.skillGroup} key={group.title}><h3>{group.title}</h3><div className={styles.chips}>{group.skills.map(skill=><span key={skill}>{skill}</span>)}</div></div>)}</section>
- <section className={styles.section}><div className={styles.sectionHead}><div><span className="eyebrow">SERVICES</span><h2>Ways I solve business problems.</h2></div><p>Software engineering combined with practical AI, automation and system integration.</p></div><div className={styles.serviceGrid}>{services.map(item=><article className={styles.serviceCard} key={item.slug}><small>{item.number}</small><h3>{item.title}</h3><p>{item.summary}</p><Link className="serviceExploreLink" href={`/services/${item.slug}`}>Explore service <ArrowRight/></Link></article>)}</div></section>
- <section className={styles.section}><div className={styles.sectionHead}><div><span className="eyebrow">PROOF MAP</span><h2>Follow each claim to the work.</h2></div><p>Projects provide the deeper context: problem, engineering decisions, implementation and lessons.</p></div><div className={styles.proofGrid}>{proof.map(item=><Link className={styles.proofCard} href={item.href} key={`${item.title}-${item.href}`}><small>{item.label}</small><div><h3>{item.title}</h3><p>{item.summary}</p></div><b>View evidence →</b></Link>)}</div></section>
- <section className={styles.darkCta}><div><span className="eyebrow light">HAVE A PRODUCT OR BOTTLENECK?</span><h2>Let’s build the right system.</h2><p>Tell me what you are building or where repetitive work is slowing your team down.</p></div><a href="mailto:mrbarnx@gmail.com?subject=Capabilities%20Enquiry">Start a conversation ↗</a></section>
- </main>;
-}
+export const metadata:Metadata={title:'Capabilities',description:'Choose between Barnabas Mikel’s client services and technical skills.'};
+export default async function CapabilitiesPage(){const content=await getProfessionalContent();return <main className={styles.page}>
+ <section className={styles.hero}><span className="eyebrow">CAPABILITIES</span><h1>What do you<br/>want to explore?</h1><p>{content.profile.capabilitiesIntro}</p></section>
+ <section className={styles.choices} aria-label="Choose services or skills"><Link href="/services"><span className={styles.icon}><BriefcaseBusiness/></span><small>FOR BUSINESSES & FOUNDERS</small><h2>View Services</h2><p>Explore the products, websites, automation and software systems you can hire me to build.</p><b>Explore services <ArrowRight/></b></Link><Link href="/skills"><span className={styles.icon}><Code2/></span><small>FOR RECRUITERS & TEAMS</small><h2>View Skills</h2><p>See the technologies, engineering capabilities and practical experience behind the work.</p><b>Explore technical skills <ArrowRight/></b></Link></section>
+ <section className={styles.proof}><div><span className="eyebrow light">LOOKING FOR PROOF?</span><h2>Follow the capability to the work.</h2><p>Projects show the problem, engineering decisions, implementation and result behind each claim.</p></div><Link href="/projects">View project archive <ArrowRight/></Link></section>
+ </main>}

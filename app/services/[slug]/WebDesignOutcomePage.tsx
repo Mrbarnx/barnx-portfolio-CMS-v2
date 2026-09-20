@@ -30,7 +30,7 @@ const deliverables = [
 
 export function WebDesignOutcomePage({ projects, requestHref }: { projects: ArchiveProject[]; requestHref: string }) {
   return <main className={styles.page}>
-    <Link className={styles.back} href="/capabilities">← All services</Link>
+    <Link className={styles.back} href="/services">← All services</Link>
 
     <section className={styles.hero}>
       <span className="eyebrow">WEB DESIGN & DEVELOPMENT</span>

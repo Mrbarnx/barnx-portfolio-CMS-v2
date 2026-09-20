@@ -49,7 +49,10 @@ The professional-content editor stores private drafts and public published conte
 - `/` — public portfolio
 - `/projects` and `/projects/[slug]` — project archive and case studies
 - `/projects/barnx-portfolio-cms` — architecture and implementation case study
-- `/capabilities` and `/experience` — CMS-driven professional content
+- `/capabilities` — gateway to the separate services and skills experiences
+- `/services` and `/services/[slug]` — client offers and service showrooms
+- `/skills` and `/experience` — CMS-driven technical and professional content
+- `/quote` — structured four-step project enquiry
 - `/impact` — evidence-first impact stories
 - `/barnx-studio` — developer resources, prompts and learning paths
 - `/admin` — protected CMS dashboard

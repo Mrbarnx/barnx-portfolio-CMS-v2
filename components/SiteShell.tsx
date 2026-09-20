@@ -41,8 +41,8 @@ export function SiteShell({children,settings}:{children:React.ReactNode;settings
             <a href={`mailto:${settings.email}`} aria-label="Email"><Mail/></a>
           </div>
         </div>
-        <div><b>Navigation</b><Link href="/">Home</Link><Link href="/projects">Projects</Link><Link href="/capabilities">Capabilities</Link><Link href="/experience">Experience</Link><Link href="/impact">Impact</Link><Link href="/barnx-studio">Barnx Studio</Link></div>
-        <div><b>Resources</b><Link href="/resume">Résumé</Link><Link href="/barnx-studio">Free resources</Link><a href={`mailto:${settings.email}`}>Consultation</a></div>
+        <div><b>Navigation</b><Link href="/">Home</Link><Link href="/projects">Projects</Link><Link href="/capabilities">Capabilities</Link><Link href="/services">Services</Link><Link href="/skills">Skills</Link><Link href="/experience">Experience</Link><Link href="/impact">Impact</Link><Link href="/barnx-studio">Barnx Studio</Link></div>
+        <div><b>Resources</b><Link href="/resume">Résumé</Link><Link href="/barnx-studio">Free resources</Link><Link href="/quote">Request a quote</Link></div>
         <div><b>Let's connect</b><a href={`mailto:${settings.email}`}>{settings.email}</a><span>{settings.location}</span></div>
       </div>
       <div className="copyright">© 2026 Barnx. Built with Next.js.</div>

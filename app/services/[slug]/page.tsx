@@ -8,6 +8,7 @@ import { getServiceShowroom, projectsForService, serviceShowrooms } from '@/data
 import { getPublishedProjects } from '@/lib/cms/publicProjects';
 import styles from './service.module.css';
 import { WebDesignOutcomePage } from './WebDesignOutcomePage';
+import { quoteHref } from '@/lib/quote';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,12 +32,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   if (!service) notFound();
 
   const projects = projectsForService(service, mergePermanentProjects(await getPublishedProjects()));
-  const requestHref = `mailto:mrbarnx@gmail.com?subject=${encodeURIComponent(`${service.title} service request`)}`;
+  const requestHref = quoteHref(service.slug);
 
   if (service.slug === 'web-design-development') return <WebDesignOutcomePage projects={projects} requestHref={requestHref}/>;
 
   return <main className={styles.page}>
-    <Link className={styles.back} href="/capabilities">← All services</Link>
+    <Link className={styles.back} href="/services">← All services</Link>
     <section className={styles.hero}>
       <span className="eyebrow">SERVICE {service.number}</span>
       <h1>{service.title}</h1>
