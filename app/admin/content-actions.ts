@@ -8,6 +8,7 @@ import { resources as fileResources } from '@/data/content';
 import { promptLibrary as filePrompts } from '@/data/prompts';
 import { studioCategories as fileStudioCategories } from '@/data/studio';
 import { readPromptSource } from '@/lib/cms/promptFiles';
+import { impactLines } from '@/lib/cms/impactText';
 
 const slug = z.string().trim().min(2).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const url = z.string().trim().refine((value) => !value || z.string().url().safeParse(value).success);
@@ -145,7 +146,7 @@ export async function saveImpactStory(data: FormData) {
   const schema=z.object({id:z.string(),slug,title:text(),summary:text(10),business_context:text(10),original_request:text(10),discovered_problem:text(10),recommendation:text(10),solution:text(10),capability_enabled:text(5),outcome:z.string(),outcome_evidence:z.enum(['measured','client_reported','enabled','proposed']),work_type:z.enum(['client_work','company_work','independent_case_study','open_source','public_build','free_community_tool']),visibility:z.enum(['confidential','client_approved','public']),status:z.enum(['draft','in_development','completed','archived']),sort_order:z.coerce.number().int().min(0)});
   const parsed=schema.safeParse(Object.fromEntries(data)); if(!parsed.success) redirect('/admin/impact?error=story');
   const {supabase,user}=await requireCmsAdmin(); const requested=data.get('intent')==='publish'; const publish=requested&&parsed.data.visibility!=='confidential'&&parsed.data.status!=='archived';
-  const payload={...parsed.data,id:undefined,system_flow:lines(data.get('system_flow')),decisions:lines(data.get('decisions')),technologies:lines(data.get('technologies')),lessons:lines(data.get('lessons')),next_improvements:lines(data.get('next_improvements')),outcome:nullable(data.get('outcome')),featured:checked(data,'featured'),published:publish,published_at:publishedAt(publish)};
+  const payload={...parsed.data,id:undefined,system_flow:impactLines(data.get('system_flow')),decisions:impactLines(data.get('decisions')),technologies:impactLines(data.get('technologies')),lessons:impactLines(data.get('lessons')),next_improvements:impactLines(data.get('next_improvements')),outcome:nullable(data.get('outcome')),featured:checked(data,'featured'),published:publish,published_at:publishedAt(publish)};
   const query=parsed.data.id?supabase.from('impact_stories').update(payload).eq('id',parsed.data.id):supabase.from('impact_stories').insert({...payload,created_by:user.id}); const {data:saved,error}=await query.select('id').single();
   if(error) redirect('/admin/impact?error=story-save'); revalidatePath('/admin/impact');revalidatePath('/impact');revalidatePath(`/impact/${parsed.data.slug}`);
   redirect(`/admin/impact/${saved.id}?saved=${publish?'published':'draft'}${requested&&!publish?'&guarded=true':''}`);

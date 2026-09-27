@@ -45,6 +45,7 @@ export type ImpactStory = {
     label: string;
     href?: string;
     asset?: string;
+    alt?: string;
     approvedForPublic: boolean;
   }>;
   lessons?: string[];
@@ -71,4 +72,43 @@ export const impactVisibilityLabels: Record<ImpactVisibility, string> = {
   confidential: 'Confidential',
   client_approved: 'Client-approved',
   public: 'Public',
+};
+
+// Keep legacy work-type values readable until their stories are reviewed in the
+// CMS. Do not silently relabel an independent study as a working public build.
+export const impactFilters = [
+  { label: 'All', value: 'all' },
+  { label: 'Client Work', value: 'client_work' },
+  { label: 'Company Work', value: 'company_work' },
+  { label: 'Public Builds', value: 'public_build' },
+  { label: 'Open Source', value: 'open_source' },
+] as const;
+
+export type ImpactFilter = typeof impactFilters[number]['value'];
+
+export function filterImpactStories(stories: ImpactStory[], filter: ImpactFilter) {
+  return filter === 'all' ? stories : stories.filter((story) => story.workType === filter);
+}
+
+export function publicEvidenceUrl(value?: string) {
+  if (!value) return undefined;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && !url.username && !url.password ? url.href : undefined;
+  } catch { return undefined; }
+}
+
+export function getPublicImpactEvidence(story: Pick<ImpactStory, 'evidence'>) {
+  return story.evidence.filter((item) => item.approvedForPublic).map((item) => ({
+    ...item,
+    href: publicEvidenceUrl(item.href),
+    asset: publicEvidenceUrl(item.asset),
+  })).filter((item) => item.href || item.asset);
+}
+
+export const impactEvidenceLabels: Record<ImpactEvidenceLevel, string> = {
+  measured: 'Measured result',
+  client_reported: 'Client-reported result',
+  enabled: 'Capability demonstrated',
+  proposed: 'Proposed benefit, not a measured result',
 };
