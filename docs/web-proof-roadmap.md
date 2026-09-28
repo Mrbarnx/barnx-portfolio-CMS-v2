@@ -95,6 +95,7 @@ The demo is implemented and was published in the earlier build. This does not es
 - [ ] Capture three useful screens and actual product footage with sample data.
 - [ ] Add Greenlane as a CMS draft, marked Public Build, with explicit implementation limits and verified live link.
 - [x] Add Greenlane to the code-managed Public Builds fallback and Web Design showroom; CMS-backed project entry remains pending.
+- [x] Prepare the timed narration, shot list, fictional recording data, capture checklist, edit specification and SRT captions.
 - [ ] Record/export the marketing demo; attach the real hosted video URL only once ready.
 - [ ] Reassess Impact eligibility after evidence is assembled; no automatic selection.
 
