@@ -94,7 +94,7 @@ The demo is implemented and was published in the earlier build. This does not es
 - [ ] Decide whether simulated handoff adequately proves #1. If using real handoff, configure only the explicitly agreed test destination; never silently send notifications to real prospects.
 - [ ] Capture three useful screens and actual product footage with sample data.
 - [ ] Add Greenlane as a CMS draft, marked Public Build, with explicit implementation limits and verified live link.
-- [ ] Link the published project into the Web Design showroom after review.
+- [x] Add Greenlane to the code-managed Public Builds fallback and Web Design showroom; CMS-backed project entry remains pending.
 - [ ] Record/export the marketing demo; attach the real hosted video URL only once ready.
 - [ ] Reassess Impact eligibility after evidence is assembled; no automatic selection.
 
