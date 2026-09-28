@@ -1,0 +1,31 @@
+1
+00:00:00,000 --> 00:00:07,000
+How many messages does it take to request one clinic appointment?
+
+2
+00:00:07,000 --> 00:00:15,000
+Service, practitioner, day and time can arrive one question at a time.
+
+3
+00:00:15,000 --> 00:00:24,000
+CarePath is a public concept showing a clearer first step.
+
+4
+00:00:24,000 --> 00:00:36,000
+Choose the service, practitioner preference and a suitable period.
+
+5
+00:00:36,000 --> 00:00:48,000
+Add contact details, give consent and review the complete request.
+
+6
+00:00:48,000 --> 00:00:59,000
+The demo prepares one structured request for human follow-up.
+
+7
+00:00:59,000 --> 00:01:08,000
+No diagnosis. No fake confirmation. No invented results.
+
+8
+00:01:08,000 --> 00:01:15,000
+Does your business handle bookings manually? Request a solution from Barnx.
