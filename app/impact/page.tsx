@@ -32,7 +32,7 @@ export default async function ImpactPage() {
         <div className={styles.sectionIntro}>
           <span>IMPACT STORIES</span>
           <h2>Business context before technology.</h2>
-          <p>Each published story will separate the problem, the decision, the system and the evidence instead of treating a tech stack as the outcome.</p>
+          <p>A curated selection, not the complete project library. Each story explains the problem investigated, the decisions made and the evidence available, distinguishing demonstrated functionality from measured business results.</p>
         </div>
         <ImpactArchive initialStories={stories} />
       </section>

@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { publicImpactStories, type ImpactStory } from '@/data/impact';
 import { getSupabaseConfig, hasSupabaseConfig } from '@/lib/supabase/config';
+import { mediaPublicUrl } from '@/lib/admin/media';
 
 export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> => {
   if (!hasSupabaseConfig()) return publicImpactStories;
@@ -14,7 +15,13 @@ export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> 
     if (error) throw error;
     if (!stories?.length) return publicImpactStories;
     const ids = stories.map((story) => story.id);
-    const { data: evidence } = await db.from('impact_evidence').select('impact_story_id,evidence_type,label,href,approved_for_public').in('impact_story_id', ids).eq('approved_for_public', true).order('sort_order');
+    const { data: evidence } = await db.from('impact_evidence').select('impact_story_id,evidence_type,label,href,media_id,approved_for_public').in('impact_story_id', ids).eq('approved_for_public', true).order('sort_order');
+    const mediaIds = [...new Set((evidence ?? []).flatMap((item) => item.media_id ? [item.media_id] : []))];
+    const assets = new Map<string, { storage_path: string; alt_text: string; mime_type: string }>();
+    if (mediaIds.length) {
+      const { data: media } = await db.from('media_assets').select('id,storage_path,alt_text,mime_type').in('id', mediaIds).eq('is_public', true);
+      for (const asset of media ?? []) assets.set(asset.id, asset);
+    }
     return stories.map((row) => ({
       slug: row.slug, title: row.title, summary: row.summary, businessContext: row.business_context,
       originalRequest: row.original_request, discoveredProblem: row.discovered_problem, recommendation: row.recommendation,
@@ -22,7 +29,13 @@ export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> 
       outcome: row.outcome ?? undefined, outcomeEvidence: row.outcome_evidence, workType: row.work_type,
       visibility: row.visibility, status: row.status, technologies: row.technologies, lessons: row.lessons,
       nextImprovements: row.next_improvements, published: true,
-      evidence: (evidence ?? []).filter((item) => item.impact_story_id === row.id).map((item) => ({ type: item.evidence_type, label: item.label, href: item.href ?? undefined, approvedForPublic: true })),
+      evidence: (evidence ?? []).filter((item) => item.impact_story_id === row.id).map((item) => {
+        const asset = assets.get(item.media_id);
+        const image = asset?.mime_type.startsWith('image/') ? asset : undefined;
+        return { type: item.evidence_type, label: item.label, href: item.href ?? undefined,
+          asset: image ? mediaPublicUrl(url, image.storage_path) : undefined,
+          alt: image?.alt_text || item.label, approvedForPublic: true };
+      }),
     })) as ImpactStory[];
   } catch { return publicImpactStories; }
 });

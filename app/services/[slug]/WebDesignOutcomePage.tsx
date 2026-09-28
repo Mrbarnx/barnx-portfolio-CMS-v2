@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectArchive';
 import type { ArchiveProject } from '@/data/permanent-projects';
+import { webCapabilities } from '@/data/web-capabilities';
 import styles from './web-design-outcome.module.css';
 
 const outcomes = [
@@ -22,11 +23,7 @@ const process = [
   ['05', 'Test and launch', 'The website is checked across devices before it goes live.'],
 ];
 
-const deliverables = [
-  'Business and company websites', 'Conversion-focused landing pages', 'Service and booking websites',
-  'Product catalogues', 'Digital storefronts', 'Portfolio websites',
-  'Lead-capture forms and follow-up systems', 'Websites connected to automation',
-];
+const deliverables = webCapabilities;
 
 export function WebDesignOutcomePage({ projects, requestHref }: { projects: ArchiveProject[]; requestHref: string }) {
   return <main className={styles.page}>

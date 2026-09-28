@@ -8,6 +8,8 @@ import { resources as fileResources } from '@/data/content';
 import { promptLibrary as filePrompts } from '@/data/prompts';
 import { studioCategories as fileStudioCategories } from '@/data/studio';
 import { readPromptSource } from '@/lib/cms/promptFiles';
+import { impactLines } from '@/lib/cms/impactText';
+import { impactStories as fileImpactStories } from '@/data/impact';
 
 const slug = z.string().trim().min(2).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const url = z.string().trim().refine((value) => !value || z.string().url().safeParse(value).success);
@@ -145,7 +147,7 @@ export async function saveImpactStory(data: FormData) {
   const schema=z.object({id:z.string(),slug,title:text(),summary:text(10),business_context:text(10),original_request:text(10),discovered_problem:text(10),recommendation:text(10),solution:text(10),capability_enabled:text(5),outcome:z.string(),outcome_evidence:z.enum(['measured','client_reported','enabled','proposed']),work_type:z.enum(['client_work','company_work','independent_case_study','open_source','public_build','free_community_tool']),visibility:z.enum(['confidential','client_approved','public']),status:z.enum(['draft','in_development','completed','archived']),sort_order:z.coerce.number().int().min(0)});
   const parsed=schema.safeParse(Object.fromEntries(data)); if(!parsed.success) redirect('/admin/impact?error=story');
   const {supabase,user}=await requireCmsAdmin(); const requested=data.get('intent')==='publish'; const publish=requested&&parsed.data.visibility!=='confidential'&&parsed.data.status!=='archived';
-  const payload={...parsed.data,id:undefined,system_flow:lines(data.get('system_flow')),decisions:lines(data.get('decisions')),technologies:lines(data.get('technologies')),lessons:lines(data.get('lessons')),next_improvements:lines(data.get('next_improvements')),outcome:nullable(data.get('outcome')),featured:checked(data,'featured'),published:publish,published_at:publishedAt(publish)};
+  const payload={...parsed.data,id:undefined,system_flow:impactLines(data.get('system_flow')),decisions:impactLines(data.get('decisions')),technologies:impactLines(data.get('technologies')),lessons:impactLines(data.get('lessons')),next_improvements:impactLines(data.get('next_improvements')),outcome:nullable(data.get('outcome')),featured:checked(data,'featured'),published:publish,published_at:publishedAt(publish)};
   const query=parsed.data.id?supabase.from('impact_stories').update(payload).eq('id',parsed.data.id):supabase.from('impact_stories').insert({...payload,created_by:user.id}); const {data:saved,error}=await query.select('id').single();
   if(error) redirect('/admin/impact?error=story-save'); revalidatePath('/admin/impact');revalidatePath('/impact');revalidatePath(`/impact/${parsed.data.slug}`);
   redirect(`/admin/impact/${saved.id}?saved=${publish?'published':'draft'}${requested&&!publish?'&guarded=true':''}`);
@@ -157,6 +159,24 @@ export async function saveImpactEvidence(data: FormData) {
   const payload={impact_story_id:storyId,evidence_type:String(data.get('evidence_type')),label:String(data.get('label')).trim(),href,media_id:mediaId,approved_for_public:checked(data,'approved_for_public'),sort_order:Number(data.get('sort_order')??0)};
   const query=id?supabase.from('impact_evidence').update(payload).eq('id',id):supabase.from('impact_evidence').insert(payload); const {error}=await query;
   revalidatePath(`/admin/impact/${storyId}`);revalidatePath('/impact');redirect(`/admin/impact/${storyId}?evidence=${error?'failed':'saved'}`);
+}
+
+export async function importSelectedImpactStories() {
+  const {supabase,user}=await requireCmsAdmin();
+  const {data:existing,error:readError}=await supabase.from('impact_stories').select('slug');
+  if(readError) redirect('/admin/impact?import=failed');
+  const existingSlugs=new Set((existing??[]).map((item)=>item.slug));
+  const stories=fileImpactStories.filter((story)=>story.published&&!existingSlugs.has(story.slug));
+  if(!stories.length) redirect('/admin/impact?import=unchanged');
+  for(let index=0;index<stories.length;index+=1){
+    const story=stories[index];
+    const {data:saved,error}=await supabase.from('impact_stories').insert({slug:story.slug,title:story.title,summary:story.summary,business_context:story.businessContext,original_request:story.originalRequest,discovered_problem:story.discoveredProblem,recommendation:story.recommendation,solution:story.solution,system_flow:story.systemFlow??[],decisions:story.decisions??[],capability_enabled:story.capabilityEnabled,outcome:story.outcome??null,outcome_evidence:story.outcomeEvidence,work_type:story.workType,visibility:story.visibility,status:story.status,technologies:story.technologies,lessons:story.lessons??[],next_improvements:story.nextImprovements??[],featured:index===0,published:true,published_at:new Date().toISOString(),sort_order:index,created_by:user.id}).select('id').single();
+    if(error||!saved) redirect('/admin/impact?import=failed');
+    const evidence=story.evidence.filter((item)=>item.href).map((item,evidenceIndex)=>({impact_story_id:saved.id,evidence_type:item.type,label:item.label,href:item.href,approved_for_public:item.approvedForPublic,sort_order:evidenceIndex}));
+    if(evidence.length){const {error:evidenceError}=await supabase.from('impact_evidence').insert(evidence);if(evidenceError)redirect('/admin/impact?import=failed');}
+  }
+  revalidatePath('/admin/impact');revalidatePath('/impact');
+  redirect('/admin/impact?import=stories');
 }
 
 export async function saveSiteSettings(data: FormData) {

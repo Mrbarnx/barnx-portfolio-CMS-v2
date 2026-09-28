@@ -6,31 +6,25 @@ import { ArrowRight } from 'lucide-react';
 import {
   impactVisibilityLabels,
   impactWorkTypeLabels,
+  impactFilters,
+  filterImpactStories,
+  getPublicImpactEvidence,
   type ImpactStory,
-  type ImpactWorkType,
+  type ImpactFilter,
 } from '@/data/impact';
 import styles from './impact.module.css';
 
-const filters: Array<{ label: string; value: 'all' | ImpactWorkType }> = [
-  { label: 'All', value: 'all' },
-  { label: 'Client Work', value: 'client_work' },
-  { label: 'Company Work', value: 'company_work' },
-  { label: 'Independent Case Studies', value: 'independent_case_study' },
-  { label: 'Open Source', value: 'open_source' },
-  { label: 'Public Builds', value: 'public_build' },
-];
-
 export function ImpactArchive({ initialStories }: { initialStories: ImpactStory[] }) {
-  const [filter, setFilter] = useState<'all' | ImpactWorkType>('all');
+  const [filter, setFilter] = useState<ImpactFilter>('all');
   const stories = useMemo(
-    () => (filter === 'all' ? initialStories : initialStories.filter((story) => story.workType === filter)),
+    () => filterImpactStories(initialStories, filter),
     [filter, initialStories],
   );
 
   return (
     <>
       <div className={styles.filters} aria-label="Filter impact stories">
-        {filters.map((item) => (
+        {impactFilters.map((item) => (
           <button
             type="button"
             key={item.value}
@@ -55,12 +49,12 @@ export function ImpactArchive({ initialStories }: { initialStories: ImpactStory[
               <p className={styles.context}>{story.businessContext}</p>
               <h2>{story.title}</h2>
               <div className={styles.problemBlock}>
-                <span>Real problem</span>
+                <span>Problem investigated</span>
                 <p>{story.discoveredProblem}</p>
               </div>
               <div className={styles.evidenceLine}>
                 <span>Evidence</span>
-                <strong>{story.evidence.filter((item) => item.approvedForPublic).length} public item(s)</strong>
+                <strong>{getPublicImpactEvidence(story).length} public item(s)</strong>
               </div>
               <Link href={`/impact/${story.slug}`}>
                 Read impact story <ArrowRight aria-hidden="true" />
@@ -70,12 +64,12 @@ export function ImpactArchive({ initialStories }: { initialStories: ImpactStory[
         </div>
       ) : (
         <section className={styles.emptyState} aria-live="polite">
-          <span>STORIES IN DOCUMENTATION</span>
-          <h2>Proof first. Stories second.</h2>
+          <span>{filter === 'all' ? 'SELECTED IMPACT STORIES' : 'NO STORIES IN THIS FILTER'}</span>
+          <h2>From problem to evidence.</h2>
           <p>
-            I’m building this section around work I can explain and verify properly — the request, the real problem,
-            the engineering decision, what was built and the evidence behind it. I won’t publish placeholder client
-            histories just to fill the page.
+            {filter === 'all'
+              ? 'A curated selection of work, with the context, decisions, system and evidence behind each solution. Explore the complete work library in Projects while these deeper stories are prepared.'
+              : 'No published story matches this work type yet. Choose All to see the current selection, or explore the complete work library in Projects.'}
           </p>
           <Link href="/projects">
             Explore current projects <ArrowRight aria-hidden="true" />
