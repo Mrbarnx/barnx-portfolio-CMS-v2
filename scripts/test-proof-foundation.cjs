@@ -73,7 +73,8 @@ async function main() {
     '@/lib/admin/media': { mediaPublicUrl: (url, path) => `${url}/${path}` },
   });
   const loaded = await loader.getPublishedImpactStories();
-  assert.equal(loaded.length, 1);
+  assert.equal(loaded.length, 2);
+  assert.ok(loaded.some((story) => story.slug === 'greenlane-structured-delivery-requests'));
   assert.ok(queries.some(([table, key, value]) => table === 'media_assets' && key === 'is_public' && value === true));
   assert.deepEqual(impact.getPublicImpactEvidence(loaded[0]).map((item) => item.asset), ['https://example.com/proof/public.png']);
   assert.doesNotMatch(JSON.stringify(loaded), /private\/hidden/);
