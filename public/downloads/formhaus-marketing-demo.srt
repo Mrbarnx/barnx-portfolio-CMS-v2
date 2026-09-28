@@ -1,0 +1,31 @@
+1
+00:00:00,000 --> 00:00:07,000
+When product information lives inside messages, every buyer starts the same conversation again.
+
+2
+00:00:07,000 --> 00:00:15,000
+Staff may keep resending photos, dimensions and material details before the customer can shortlist an option.
+
+3
+00:00:15,000 --> 00:00:25,000
+I designed Formhaus to make that first stage visual, structured and easier to navigate.
+
+4
+00:00:25,000 --> 00:00:38,000
+Buyers can search the range and filter by product category.
+
+5
+00:00:38,000 --> 00:00:50,000
+Each product gives the details needed to compare options, and suitable items can be added to one shortlist.
+
+6
+00:00:50,000 --> 00:00:59,000
+The final enquiry keeps the selected products together, giving sales a clearer starting point for follow-up.
+
+7
+00:00:59,000 --> 00:01:07,000
+This is working proof of the discovery and enquiry flow. It does not claim live inventory, checkout or measured sales results.
+
+8
+00:01:07,000 --> 00:01:15,000
+If your catalogue still lives in DMs or PDFs, let’s design a better buying journey.

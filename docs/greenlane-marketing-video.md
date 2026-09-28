@@ -2,10 +2,10 @@
 
 Status: **pre-production ready; video not yet recorded or exported**.
 
-Project: Greenlane Logistics Quote Flow  
-Classification: Public Build · Web Design & Development · Logistics  
-Demo: https://greenlane-logistics-proof.usajames017.chatgpt.site  
-Target duration: 75 seconds  
+Project: Greenlane Logistics Quote Flow
+Classification: Independent Case Study · Web Design & Development · Logistics
+Demo: https://greenlane-logistics-proof.usajames017.chatgpt.site
+Target duration: 75 seconds
 Versions: 16:9 portfolio/outreach master and separately framed 9:16 social cut
 
 ## The story
@@ -22,7 +22,7 @@ Evidence boundary: this demo proves the customer flow, validation, review, confi
 |---|---|---|---|
 | 00:00–00:07 | How many messages does it take to collect the details for one delivery quote? | Start with a simple animated sample conversation: “How much to deliver a package?” followed by question bubbles for pickup, destination and weight. Label it “Example enquiry”. | A delivery enquiry can start with missing details. |
 | 00:07–00:15 | Pickup. Destination. Package. Delivery date. The business still needs the same information before it can prepare a quote. | Keep the sample conversation visible, then group the repeated questions into five field labels. Do not show a real person, phone number or company message. | The team still needs the same information. |
-| 00:15–00:25 | I built Greenlane, a public logistics concept, to make that first step clearer. | Cut to the Greenlane homepage. Scroll from the hero to services and “How it works”. Keep the Public Build bar visible long enough to read. | Greenlane · Public Build |
+| 00:15–00:25 | I built Greenlane, an independent logistics case study, to make that first step clearer. | Cut to the Greenlane homepage. Scroll from the hero to services and “How it works”. | Greenlane · Logistics case study |
 | 00:25–00:34 | The customer chooses the delivery service and adds the pickup and destination. | Open “Request a delivery”. Select Same-day delivery. Enter fictional Lagos addresses. | 1 · Route |
 | 00:34–00:42 | Then they describe the package and choose a preferred pickup date. | Enter “Parcel / box”, 2 kg, a future date and “Two pairs of shoes in a sealed box”. | 2 · Package |
 | 00:42–00:49 | They leave their contact details so the team can respond. | Enter “Alex Demo”, a clearly fictional number and `alex@example.com`. Avoid typing animation that is too fast to read. | 3 · Contact |

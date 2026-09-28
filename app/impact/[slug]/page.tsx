@@ -76,6 +76,7 @@ export default async function ImpactStoryPage({ params }: { params: Promise<{ sl
         <h2>Does your business handle a similar process manually?</h2>
         <p>Tell me how it works today and what should become easier. We can define the right next step.</p>
         <Link className="button black" href={quoteHref()}>Request a solution →</Link>
+        {story.projectSlug ? <Link href={`/projects/${story.projectSlug}`}>View the related project →</Link> : null}
         <Link href="/projects">Explore the complete work library →</Link>
       </section>
     </main>

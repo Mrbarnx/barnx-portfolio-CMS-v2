@@ -10,6 +10,7 @@ import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-pr
 type Filter = 'all' | ProjectType | 'case_studies';
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
+  ['public_build', 'Public Builds'],
   ['case_studies', 'Case Studies'],
   ['client_work', 'Client Work'],
   ['template', 'Templates'],
@@ -17,7 +18,7 @@ const filters: Array<[Filter, string]> = [
 
 const filterIntroductions: Record<Filter, string> = {
   all: 'Explore public builds, client work, detailed case studies and templates. Each project shows the proof that is safe and useful to share.',
-  public_build: 'Personal products and experiments I build publicly to explore ideas, solve practical problems and demonstrate how I design and engineer software.',
+  public_build: 'Open-source products shared publicly so people can use the working software, inspect the implementation and build on the ideas.',
   client_work: 'Selected projects completed for clients who have permitted me to showcase the work, my contribution and the resulting solution.',
   case_studies: 'Detailed breakdowns of selected projects, covering the problem, product decisions, technical approach, challenges and final outcome.',
   template: 'Polished, reusable website experiences for businesses and creators who want a strong starting point without building from scratch.',
@@ -58,7 +59,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
         ? visualHref.startsWith('/') ? <Link href={visualHref}>{visual}</Link> : <a href={visualHref} target="_blank" rel="noreferrer">{visual}</a>
         : visual}
       <div className="projectBody">
-        <span>{project.caseStudyEnabled !== false ? 'Case Study' : typeLabel(type)} · {project.category}</span>
+        <span>{project.openSource ? 'Public Build' : project.caseStudyEnabled !== false ? 'Case Study' : typeLabel(type)} · {project.category}</span>
         <h2>{project.title}</h2>
         <p>{project.short}</p>
         <div className="tags">{project.tech.slice(0, 4).map(item => <b key={item}>{item}</b>)}</div>
@@ -80,7 +81,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
     <ProjectStar id={project.slug}/>
     {previewOpen && project.live ? <div className="projectPreviewBackdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setPreviewOpen(false)}>
       <section className="projectPreviewDialog" role="dialog" aria-modal="true" aria-labelledby={`${project.slug}-preview-title`}>
-        <header><div><span>Interactive public build</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><button ref={closeButton} type="button" onClick={() => setPreviewOpen(false)} aria-label="Close interactive preview">Close ×</button></header>
+        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><button ref={closeButton} type="button" onClick={() => setPreviewOpen(false)} aria-label="Close interactive preview">Close ×</button></header>
         <iframe title={`${project.title} interactive preview`} src={project.live} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer" />
       </section>
     </div> : null}
@@ -92,7 +93,8 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
   const allProjects = mergePermanentProjects(projects);
   const visible = allProjects.filter(project => active === 'all'
     || active === 'case_studies' && project.caseStudyEnabled !== false
-    || (project.projectType ?? 'public_build') === active);
+    || active === 'public_build' && project.openSource === true
+    || active !== 'public_build' && (project.projectType ?? 'public_build') === active);
 
   return <>
     <AnimatePresence mode="wait" initial={false}>

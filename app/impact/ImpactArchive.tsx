@@ -59,6 +59,7 @@ export function ImpactArchive({ initialStories }: { initialStories: ImpactStory[
               <Link href={`/impact/${story.slug}`}>
                 Read impact story <ArrowRight aria-hidden="true" />
               </Link>
+              {story.projectSlug ? <Link href={`/projects/${story.projectSlug}`}>View related project <ArrowRight aria-hidden="true" /></Link> : null}
             </article>
           ))}
         </div>

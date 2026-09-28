@@ -6,7 +6,7 @@ Services explain what Barnx can solve. Projects is the complete work library. Im
 
 Narrative: **business context → problem → friction → desired outcome → solution → working proof → evidence → business value → technical approach → CTA**.
 
-Public Builds are independently created concepts, not commissioned client work. Case Studies is a presentation filter, not an ownership type. A Public Build can have a project case study and later be selected for a deeper Impact story. Preserve Company Work and Open Source attribution when applicable; do not relabel them as client projects.
+Public Builds are open-source products intentionally shared for public use and inspection. Independent concept solutions are presented as Case Studies, not client work. Either type can have a detailed project page, and only the strongest few should be selected for deeper Impact stories. Preserve Company Work and Client Work attribution when applicable; never relabel concept work as commissioned work.
 
 ## Current state and audit (27 September 2026)
 
@@ -39,7 +39,7 @@ Placement: portfolio infrastructure, not a new Impact story.
 - [x] Inspect CMS, public loaders, routes, data model and deployment documentation.
 - [x] Share the eight service capability labels.
 - [x] Keep headline “Real problems. Thoughtful systems. Verifiable outcomes.”
-- [x] Use All / Client Work / Company Work / Public Builds / Open Source for Impact.
+- [x] Use All / Client Work / Company Work / Public Builds for Impact. Open-source work is included under Public Builds.
 - [x] Replace “Proof first. Stories second.” with “From problem to evidence.”
 - [x] Move approved working evidence ahead of technology and add Request a solution.
 - [x] Resolve publicly approved Media Library image evidence without exposing private assets.
@@ -70,14 +70,14 @@ No production migrations, record edits, secrets, hosting transfer or direct main
 
 ## Tasks 3–10: the eight proof builds
 
-All eight belong in **Projects → Public Builds**, under the **Web Design & Development** service category. Each starts with the six-part brief below. No fake brands presented as real clients, testimonials or business performance claims.
+All eight belong in **Projects → Case Studies**, under the **Web Design & Development** service category. A project moves into **Public Builds** only when its source is intentionally open and publicly shared. Each starts with the six-part brief below. No fake brands presented as real clients, testimonials or business performance claims.
 
 | # / capability | Target | Possible business problem | Desired outcome | Minimum functional proof | Impact selection |
 |---|---|---|---|---|---|
 | 1. Business/company website | Logistics company | Incomplete delivery enquiries require repeated questions | Collect the information needed to review a quote request | Services, coverage, route/package/contact form, review, confirmation, structured request view | Candidate after testing and evidence; not selected yet |
 | 2. Conversion landing page | Logistics company promoting same-day delivery | Campaign traffic reaches a generic page without a clear next step | Give one campaign a focused enquiry path | Campaign headline, conditions, coverage, benefits, FAQs, one validated lead form and confirmation | Built as Dispatch Now; Projects first; select only if evidence differs meaningfully from #1 |
 | 3. Service/booking website | Appointment-based clinic | Repeated conversations to find a suitable appointment | Let a visitor request a service and an available time | Built as CarePath: service/provider, sample slots, contact details, review, confirmation; no patient medical records | Projects first; not selected for Impact |
-| 4. Product catalogue | Furniture supplier or wholesaler | Staff repeatedly sends product images and details | Let buyers explore products before asking for a quote | Categories, search/filter, product details, product-specific enquiry; no payment system | Projects first |
+| 4. Product catalogue | Furniture supplier or wholesaler | Staff repeatedly sends product images and details | Let buyers explore products before asking for a quote | Built as Formhaus: categories, search/filter, product details, shortlist and product-specific enquiry; no payment system | Projects first |
 | 5. Digital storefront | Digital-product seller | Product explanations and orders are scattered across DMs | Structure discovery, selection and ordering | Product catalogue, details, clearly labelled demo checkout/order request, confirmation; no real payment collection | Projects first |
 | 6. Professional portfolio | Architect, consultant or creative | Work is scattered and there is no clear enquiry path | Turn relevant work into understandable proof | Services, selected work, one honest case study, about and project enquiry; no fabricated testimonials | Projects first |
 | 7. Lead capture/follow-up | Real-estate agency | Leads lack requirements and follow-up visibility | Give staff qualified enquiry details and visible next steps | Intake with location/budget/timeline, lead record, small status view; sample data with explicit demo boundaries | Strong candidate if workflow tested |
@@ -93,8 +93,8 @@ The demo is implemented and was published in the earlier build. This does not es
 - [ ] Run and document full request, validation, back-navigation, confirmation and business-view flows.
 - [ ] Decide whether simulated handoff adequately proves #1. If using real handoff, configure only the explicitly agreed test destination; never silently send notifications to real prospects.
 - [ ] Capture three useful screens and actual product footage with sample data.
-- [ ] Add Greenlane as a CMS draft, marked Public Build, with explicit implementation limits and verified live link.
-- [x] Add Greenlane to the code-managed Public Builds fallback and Web Design showroom; CMS-backed project entry remains pending.
+- [ ] Add Greenlane as a CMS draft, marked Independent Case Study, with explicit implementation limits and verified live link.
+- [x] Add Greenlane to the code-managed Case Studies fallback and Web Design showroom; CMS-backed project entry remains pending.
 - [x] Prepare the timed narration, shot list, fictional recording data, capture checklist, edit specification and SRT captions.
 - [ ] Record/export the marketing demo; attach the real hosted video URL only once ready.
 - [ ] Reassess Impact eligibility after evidence is assembled; no automatic selection.
