@@ -10,9 +10,8 @@ import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-pr
 type Filter = 'all' | ProjectType | 'case_studies';
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
-  ['public_build', 'Public Builds'],
-  ['client_work', 'Client Work'],
   ['case_studies', 'Case Studies'],
+  ['client_work', 'Client Work'],
   ['template', 'Templates'],
 ];
 
@@ -59,7 +58,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
         ? visualHref.startsWith('/') ? <Link href={visualHref}>{visual}</Link> : <a href={visualHref} target="_blank" rel="noreferrer">{visual}</a>
         : visual}
       <div className="projectBody">
-        <span>{typeLabel(type)} · {project.category} · {project.status}</span>
+        <span>{project.caseStudyEnabled !== false ? 'Case Study' : typeLabel(type)} · {project.category}</span>
         <h2>{project.title}</h2>
         <p>{project.short}</p>
         <div className="tags">{project.tech.slice(0, 4).map(item => <b key={item}>{item}</b>)}</div>

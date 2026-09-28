@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import { projects as fallbackProjects, type Project, type ProjectImage } from '@/data/content';
 import { getSupabaseConfig } from '@/lib/supabase/config';
 import { mediaPublicUrl } from '@/lib/admin/media';
+import { mergePermanentProjects, permanentProjects } from '@/data/permanent-projects';
 
 type PublicProjectRow = {
   id: string;
@@ -151,15 +152,18 @@ export const getPublishedProjects = cache(async (): Promise<Project[]> => {
     if (error) throw error;
     const rows = (data ?? []) as unknown as PublicProjectRow[];
     const media = await loadProjectMedia(client, rows.map((row) => row.id));
-    return rows.map((row) => mapProject(row, media.get(row.id)));
+    return mergePermanentProjects(rows.map((row) => mapProject(row, media.get(row.id))));
   } catch (error) {
     console.error('Published projects fallback activated:', error instanceof Error ? error.message : 'Unknown Supabase error');
-    return fallbackProjects;
+    return mergePermanentProjects(fallbackProjects);
   }
 });
 
 export const getPublishedProject = cache(async (slug: string): Promise<Project | null> => {
   noStore();
+
+  const permanent = permanentProjects.find((project) => project.slug === slug);
+  if (permanent) return permanent;
 
   try {
     const client = publicClient();

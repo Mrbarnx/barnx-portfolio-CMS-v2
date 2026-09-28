@@ -38,6 +38,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly',
     priority: 0.8,
   }));
+  const demoStoryPages: MetadataRoute.Sitemap = projects.filter((project) => project.caseStudyEnabled !== false).map((project) => ({
+    url: `${site.url}/projects/${project.slug}/demo`,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
 
   const servicePages: MetadataRoute.Sitemap = serviceShowrooms.map((service) => ({
     url: `${site.url}/services/${service.slug}`,
@@ -45,5 +50,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...pages, ...servicePages, ...projectPages];
+  return [...pages, ...servicePages, ...projectPages, ...demoStoryPages];
 }
