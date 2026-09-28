@@ -29,6 +29,11 @@ async function main() {
   assert.deepEqual(impactLines('Keep route, weight and date together.\r\n\n No payments. '), ['Keep route, weight and date together.', 'No payments.']);
   assert.deepEqual(impactLines(null), []);
   assert.equal(load('data/web-capabilities.ts').webCapabilities.length, 8);
+  const permanent = load('data/permanent-projects.ts').permanentProjects;
+  const exclusiveTypes = new Set(['public_build', 'client_work', 'private_project', 'template']);
+  assert.ok(permanent.every((project) => exclusiveTypes.has(project.projectType)), 'Every permanent project has one exclusive classification');
+  assert.ok(permanent.filter((project) => project.projectType === 'public_build').every((project) => project.github), 'Every Public Build exposes source code');
+  assert.ok(['greenlane-logistics-proof','dispatch-now-lagos','carepath-clinic-booking','formhaus-furniture-catalogue','northstar-digital-storefront','adaeze-okoro-architect-portfolio','havenly-property-lead-flow','neatflow-cleaning-automation'].every((slug) => permanent.find((project) => project.slug === slug)?.projectType === 'private_project'), 'Independent web proofs remain Case Studies');
   const evidence = [
     { label: 'Live demo', type: 'live', href: 'https://example.com/demo', approvedForPublic: true },
     { label: 'Screenshot', type: 'image', asset: 'https://example.com/proof.png', alt: 'A structured enquiry', approvedForPublic: true },

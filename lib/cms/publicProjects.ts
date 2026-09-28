@@ -80,7 +80,7 @@ function mapProject(row: PublicProjectRow, media?: ProjectMedia): Project {
     live: row.live_url ?? undefined,
     github: row.github_url ?? undefined,
     buyUrl: row.buy_url ?? undefined,
-    projectType: row.project_type,
+    projectType: row.project_type === 'public_build' && !row.github_url ? 'private_project' : row.project_type,
     caseStudyEnabled: row.case_study_enabled,
     coverImage: media?.cover,
     galleryImages: media?.gallery,

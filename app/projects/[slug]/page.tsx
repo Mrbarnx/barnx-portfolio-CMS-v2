@@ -19,10 +19,11 @@ export default async function ProjectDetail({params}:{params:Promise<{slug:strin
   const p=await getPublishedProject(slug);
   if(!p||p.caseStudyEnabled===false)notFound();
   const images=p.galleryImages?.length?p.galleryImages:p.coverImage?[p.coverImage]:[];
+  const typeLabel={public_build:'Public Build',client_work:'Client Work',private_project:'Case Study',template:'Template'}[p.projectType??'private_project'];
   return <main className="page caseStudy">
     <Link className="back" href="/projects">← All projects</Link>
     <section className="caseHero">
-      <span className="eyebrow">{p.category} · {p.openSource?'Public Build':'Case Study'}</span>
+      <span className="eyebrow">{p.category} · {typeLabel}</span>
       <h1>{p.title}</h1><p>{p.overview}</p>
       <div className="caseLinks">
         {p.interactivePreview&&p.live?<a href="#interactive-preview">Try the experience ↓</a>:null}
@@ -30,8 +31,10 @@ export default async function ProjectDetail({params}:{params:Promise<{slug:strin
         {p.impactSlug?<Link href={`/impact/${p.impactSlug}`}>Read Impact story →</Link>:null}
         {p.github?<a href={p.github} target="_blank" rel="noreferrer">GitHub ↗</a>:null}
       </div>
-      {p.openSource
+      {p.projectType==='public_build'
         ? <p className="caseDisclosure">Open-source public build · The working product and source repository are publicly available.</p>
+        : p.projectType==='client_work'
+        ? <p className="caseDisclosure">Client work · Shared only through approved, non-confidential project information.</p>
         : <p className="caseDisclosure">Independent case study · Designed and built by Barnx · No client or measured outcome is implied.</p>}
     </section>
 
