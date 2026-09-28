@@ -73,7 +73,7 @@ async function main() {
     '@/lib/admin/media': { mediaPublicUrl: (url, path) => `${url}/${path}` },
   });
   const loaded = await loader.getPublishedImpactStories();
-  assert.equal(loaded.length, 3);
+  assert.equal(loaded.length, 4);
   assert.ok(loaded.some((story) => story.slug === 'greenlane-structured-delivery-requests'));
   assert.ok(loaded.some((story) => story.slug === 'openlink-own-your-digital-identity'));
   assert.ok(queries.some(([table, key, value]) => table === 'media_assets' && key === 'is_public' && value === true));

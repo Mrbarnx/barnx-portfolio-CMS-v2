@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ProjectMediaViewer } from '@/components/ProjectMediaViewer';
+import { ResponsiveProjectPreview } from '@/components/ResponsiveProjectPreview';
 import { getPublishedProject } from '@/lib/cms/publicProjects';
 
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export default async function ProjectDetail({params}:{params:Promise<{slug:strin
         : <p className="caseDisclosure">Independent case study · Designed and built by Barnx · No client or measured outcome is implied.</p>}
     </section>
 
-    {p.interactivePreview&&p.live?<section className="caseInteractive" id="interactive-preview"><div className="caseInteractiveHead"><div><span className="eyebrow">INTERACTIVE EXPERIENCE</span><h2>Use the product without leaving the case study.</h2></div><p>Complete the core customer journey directly inside this page.</p></div><div className="caseInteractiveFrame"><iframe src={p.live} title={`${p.title} interactive experience`} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer"/></div></section>:<ProjectMediaViewer images={images} video={p.video} projectTitle={p.title} fallbackTitle={p.display} fallbackSubtitle={p.visualSubtitle} tone={p.tone}/>}
+    {p.interactivePreview&&p.live?<section className="caseInteractive" id="interactive-preview"><div className="caseInteractiveHead"><div><span className="eyebrow">INTERACTIVE EXPERIENCE</span><h2>Use the product without leaving the case study.</h2></div><p>Switch between phone, tablet and desktop sizes. On mobile, the live experience opens in a new tab.</p></div><div className="caseInteractiveFrame"><ResponsiveProjectPreview live={p.live} title={p.title}/></div></section>:<ProjectMediaViewer images={images} video={p.video} projectTitle={p.title} fallbackTitle={p.display} fallbackSubtitle={p.visualSubtitle} tone={p.tone}/>}
 
     <section className="caseColumns"><div><span className="eyebrow">BUSINESS PROBLEM</span><h2>{p.problem}</h2></div><div><span className="eyebrow">DESIRED OUTCOME</span><p>{p.solution}</p></div></section>
     <section className="caseSection"><span className="eyebrow">THE SYSTEM</span><div className="featureGrid">{p.features.map((f,index)=><article key={f}><span>{String(index+1).padStart(2,'0')}</span><p>{f}</p></article>)}</div></section>
