@@ -31,10 +31,16 @@ function typeLabel(type: ProjectType) {
 
 export function ProjectCard({ project }: { project: ArchiveProject }) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewSize, setPreviewSize] = useState<'phone'|'tablet'|'desktop'>('desktop');
   const closeButton = useRef<HTMLButtonElement>(null);
   const type = project.projectType ?? 'public_build';
   const caseHref = project.href ?? `/projects/${project.slug}`;
   const visualHref = project.caseStudyEnabled !== false ? caseHref : project.live ?? project.buyUrl ?? project.github;
+  const openPreview = () => {
+    if (!project.live) return;
+    if (window.matchMedia('(max-width: 767px)').matches) window.open(project.live, '_blank', 'noopener,noreferrer');
+    else setPreviewOpen(true);
+  };
   const visual = <div className={`projectVisual ${project.tone}${project.coverImage ? ' hasCover' : ''}`}>
     <div className="browser"><i/><i/><i/></div>
     {project.coverImage
@@ -53,9 +59,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
 
   return <motion.div className="projectCardWrap" layout initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} exit={{opacity:0,y:18,scale:.98}} transition={{duration:.42,ease:[.22,1,.36,1]}}>
     <motion.article className="projectCard" whileHover={{y:-8,rotateX:1.2,rotateY:-1.2}} transition={{duration:.25}}>
-      {project.interactivePreview && project.live
-        ? <button className="projectVisualTrigger" type="button" onClick={() => setPreviewOpen(true)} aria-label={`Preview ${project.title} inside this page`}>{visual}</button>
-        : visualHref
+      {visualHref
         ? visualHref.startsWith('/') ? <Link href={visualHref}>{visual}</Link> : <a href={visualHref} target="_blank" rel="noreferrer">{visual}</a>
         : visual}
       <div className="projectBody">
@@ -64,7 +68,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
         <p>{project.short}</p>
         <div className="tags">{project.tech.slice(0, 4).map(item => <b key={item}>{item}</b>)}</div>
         <div className="projectActions" aria-label={`${project.title} links`}>
-          {project.interactivePreview && project.live ? <button type="button" onClick={() => setPreviewOpen(true)}>Interactive Preview ↗</button> : project.live ? <a href={project.live} target="_blank" rel="noreferrer">{type === 'client_work' ? 'View Project' : 'Live Preview'} ↗</a> : null}
+          {project.interactivePreview && project.live ? <button type="button" onClick={openPreview}>Interactive Preview ↗</button> : project.live ? <a href={project.live} target="_blank" rel="noreferrer">{type === 'client_work' ? 'View Project' : 'Live Preview'} ↗</a> : null}
           {project.video?.url ? project.caseStudyEnabled !== false
             ? <Link href={`${caseHref}#project-media`}>Watch Demo ▶</Link>
             : <a href={project.video.url} target="_blank" rel="noreferrer">Watch Demo ▶</a> : null}
@@ -81,8 +85,8 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
     <ProjectStar id={project.slug}/>
     {previewOpen && project.live ? <div className="projectPreviewBackdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setPreviewOpen(false)}>
       <section className="projectPreviewDialog" role="dialog" aria-modal="true" aria-labelledby={`${project.slug}-preview-title`}>
-        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><button ref={closeButton} type="button" onClick={() => setPreviewOpen(false)} aria-label="Close interactive preview">Close ×</button></header>
-        <iframe title={`${project.title} interactive preview`} src={project.live} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer" />
+        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><div className="previewDialogTools"><div className="previewSizeControls" aria-label="Preview size">{(['phone','tablet','desktop'] as const).map(size=><button type="button" className={previewSize===size?'active':''} onClick={()=>setPreviewSize(size)} aria-pressed={previewSize===size} key={size}>{size}</button>)}</div><button ref={closeButton} type="button" onClick={() => setPreviewOpen(false)} aria-label="Close interactive preview">Close ×</button></div></header>
+        <div className={`responsivePreviewStage ${previewSize}`}><iframe title={`${project.title} interactive preview`} src={project.live} sandbox="allow-forms allow-scripts allow-same-origin allow-popups" referrerPolicy="no-referrer" /></div>
       </section>
     </div> : null}
   </motion.div>;
