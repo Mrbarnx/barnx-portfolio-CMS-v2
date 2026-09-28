@@ -17,7 +17,7 @@ export const projectTones = [
 export const projectTypes = [
   ['public_build', 'Public build'],
   ['client_work', 'Client work'],
-  ['private_project', 'Private project'],
+  ['private_project', 'Case study'],
   ['template', 'Template'],
 ] as const;
 
@@ -69,6 +69,9 @@ export const projectFormSchema = z.object({
   private_video_url: optionalHttpsUrl,
   demo_video_title: z.string().trim().max(100, 'Keep the video title under 100 characters.'),
 }).superRefine((values, context) => {
+  if (values.project_type === 'public_build' && !values.github_url) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ['github_url'], message: 'Public Builds require a public source-code URL.' });
+  }
   if (['public', 'unlisted'].includes(values.demo_visibility) && !values.demo_video_url) {
     context.addIssue({ code: z.ZodIssueCode.custom, path: ['demo_video_url'], message: 'Add the external video URL.' });
   }

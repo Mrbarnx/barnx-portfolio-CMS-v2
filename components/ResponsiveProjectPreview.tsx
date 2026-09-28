@@ -14,6 +14,5 @@ export function ResponsiveProjectPreview({ live, title }: { live: string; title:
     <div className={`responsivePreviewStage ${size}`}>
       <iframe style={{maxWidth:widths[size]}} src={live} title={`${title} interactive experience`} sandbox="allow-forms allow-scripts allow-same-origin allow-popups" referrerPolicy="no-referrer"/>
     </div>
-    <a className="mobileLiveLink" href={live} target="_blank" rel="noreferrer">Open the live experience ↗</a>
   </div>;
 }
