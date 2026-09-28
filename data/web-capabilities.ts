@@ -1,12 +1,14 @@
-// One shared list for the service showroom and the proof-production roadmap.
-// These are offers, not claims that all eight demos already exist.
-export const webCapabilities = [
-  'Business and company websites',
-  'Conversion-focused landing pages',
-  'Service and booking websites',
-  'Product catalogues',
-  'Digital storefronts',
-  'Portfolio websites',
-  'Lead-capture forms and follow-up systems',
-  'Websites connected to automation',
+// The offer is organised around business friction, not deliverable labels.
+// Each capability links to one honest working proof.
+export const webCapabilityProofs = [
+  { capability: 'Business and company websites', problem: 'Customers may struggle to understand a company’s services or know what information to provide before making contact.', outcome: 'Build trust and turn an open-ended enquiry into a clearer first conversation.', solution: 'A credible company website with clear services and a guided enquiry flow.', projectSlug: 'greenlane-logistics-proof' },
+  { capability: 'Conversion-focused landing pages', problem: 'Campaign traffic may land on a generic homepage without one focused message or next action.', outcome: 'Give one audience a direct path from an offer to a qualified response.', solution: 'A focused landing page with offer context, reassurance and lead capture.', projectSlug: 'dispatch-now-lagos' },
+  { capability: 'Service and booking websites', problem: 'Appointment requests may require repeated messages about services, availability and contact details.', outcome: 'Make service discovery and appointment requests easier for customers and staff.', solution: 'A service website with a structured, reviewable booking-request journey.', projectSlug: 'carepath-clinic-booking' },
+  { capability: 'Product catalogues', problem: 'Buyers may repeatedly ask for product photos, specifications and available options before deciding what fits.', outcome: 'Help buyers explore and shortlist suitable products before contacting sales.', solution: 'A searchable catalogue with filters, product details and a focused enquiry handoff.', projectSlug: 'formhaus-furniture-catalogue' },
+  { capability: 'Digital storefronts', problem: 'Products promoted across posts and messages can make discovery and ordering feel fragmented.', outcome: 'Create a clearer journey from product discovery to an organised order request.', solution: 'A focused storefront with collections, product details and a structured order list.', projectSlug: 'northstar-digital-storefront' },
+  { capability: 'Portfolio websites', problem: 'Strong work may be scattered across social posts and PDFs without a clear path from proof to enquiry.', outcome: 'Present expertise professionally and help the right prospects start a useful conversation.', solution: 'An editorial portfolio connecting selected work, deeper thinking and project enquiry.', projectSlug: 'adaeze-okoro-architect-portfolio' },
+  { capability: 'Lead-capture forms and follow-up systems', problem: 'New leads may arrive without the budget, location, timing or preferences needed for useful follow-up.', outcome: 'Give the business a more complete lead before the first sales response.', solution: 'A guided qualification flow with a structured lead summary and visible next step.', projectSlug: 'havenly-property-lead-flow' },
+  { capability: 'Websites connected to automation', problem: 'Teams may copy website requests manually into replies, records and internal follow-up tasks.', outcome: 'Move a valid request into the next operational steps more consistently.', solution: 'A service website connected to a visible request-to-follow-up workflow.', projectSlug: 'neatflow-cleaning-automation' },
 ] as const;
+
+export const webCapabilities = webCapabilityProofs.map(({ capability }) => capability);

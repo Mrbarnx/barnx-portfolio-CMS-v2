@@ -2,18 +2,8 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectArchive';
 import type { ArchiveProject } from '@/data/permanent-projects';
-import { webCapabilities } from '@/data/web-capabilities';
+import { webCapabilityProofs } from '@/data/web-capabilities';
 import styles from './web-design-outcome.module.css';
-
-const outcomes = [
-  ['Build more trust', 'Professional business website'],
-  ['Generate more leads from ads', 'Conversion-focused landing page'],
-  ['Stop losing Instagram or WhatsApp leads', 'Lead capture and follow-up system'],
-  ['Reduce booking back-and-forth', 'Online booking system'],
-  ['Explain your services clearly', 'Service pages and FAQs'],
-  ['Reduce repetitive manual work', 'Website and workflow automation'],
-  ['Showcase or sell your products', 'Product catalogue or digital storefront'],
-];
 
 const process = [
   ['01', 'Understand the goal', 'We begin with what the business needs the website to accomplish.'],
@@ -23,9 +13,8 @@ const process = [
   ['05', 'Test and launch', 'The website is checked across devices before it goes live.'],
 ];
 
-const deliverables = webCapabilities;
-
 export function WebDesignOutcomePage({ projects, requestHref }: { projects: ArchiveProject[]; requestHref: string }) {
+  const proofProjects = webCapabilityProofs.map(({ projectSlug }) => projects.find((project) => project.slug === projectSlug)).filter((project): project is ArchiveProject => Boolean(project));
   return <main className={styles.page}>
     <Link className={styles.back} href="/services">← All services</Link>
 
@@ -37,8 +26,11 @@ export function WebDesignOutcomePage({ projects, requestHref }: { projects: Arch
     </section>
 
     <section className={styles.outcomeSection}>
-      <div className={styles.sectionHead}><div><span className="eyebrow">START WITH THE GOAL</span><h2>What does your business need to do better?</h2></div><p>The right website depends on the outcome—not the trendiest technology.</p></div>
-      <div className={styles.outcomeGrid}>{outcomes.map(([need, solution]) => <article key={need}><small>BUSINESS NEED</small><h3>{need}</h3><span>→</span><p>{solution}</p></article>)}</div>
+      <div className={styles.sectionHead}><div><span className="eyebrow">PROBLEM → SOLUTION → PROOF</span><h2>Eight common business problems. Eight working proofs.</h2></div><p>Choose the problem closest to yours. Each example shows the minimum useful system built to address it—without presenting a concept as client work.</p></div>
+      <div className={styles.outcomeGrid}>{webCapabilityProofs.map((item, index) => {
+        const project = projects.find(({ slug }) => slug === item.projectSlug);
+        return <article key={item.capability}><small>{String(index + 1).padStart(2, '0')} · {item.capability}</small><h3>{item.problem}</h3><div className={styles.outcomeDetail}><strong>Desired outcome</strong><p>{item.outcome}</p></div><div className={styles.outcomeDetail}><strong>What I’d build</strong><p>{item.solution}</p></div>{project && <Link className={styles.proofLink} href={`/projects/${project.slug}`}>View the {project.title} proof <ArrowRight/></Link>}</article>;
+      })}</div>
     </section>
 
     <section className={styles.approach}>
@@ -46,14 +38,9 @@ export function WebDesignOutcomePage({ projects, requestHref }: { projects: Arch
       <div className={styles.steps}>{process.map(([number, title, body]) => <article key={number}><small>{number}</small><div><h3>{title}</h3><p>{body}</p></div></article>)}</div>
     </section>
 
-    <section className={styles.buildSection}>
-      <div className={styles.sectionHead}><div><span className="eyebrow">WHAT I CAN BUILD</span><h2>The right experience for the job.</h2></div><p>From a focused campaign page to a complete business website connected to the systems behind it.</p></div>
-      <div className={styles.deliverables}>{deliverables.map((item, index) => <article key={item}><small>{String(index + 1).padStart(2, '0')}</small><h3>{item}</h3></article>)}</div>
-    </section>
-
     <section className={styles.showroom} id="selected-work">
       <div className={styles.sectionHead}><div><span className="eyebrow">SELECTED WORK</span><h2>Relevant website proof.</h2></div><p>Selected projects showing responsive interfaces, clear presentation and product-focused web development.</p></div>
-      {projects.length ? <div className="projectGrid">{projects.map((project) => <ProjectCard project={project} key={project.slug}/>)}</div> : <div className={styles.empty}><h3>Project proof is being prepared.</h3><p>Tell me the outcome you need and I’ll recommend the most suitable approach.</p></div>}
+      {proofProjects.length ? <div className="projectGrid">{proofProjects.map((project) => <ProjectCard project={project} key={project.slug}/>)}</div> : <div className={styles.empty}><h3>Project proof is being prepared.</h3><p>Tell me the outcome you need and I’ll recommend the most suitable approach.</p></div>}
     </section>
 
     <section className={styles.cta}><div><span className="eyebrow light">HAVE A BUSINESS GOAL?</span><h2>Tell me the goal. I’ll tell you what I’d build.</h2><p>Share what your business should be doing better digitally, and we’ll define the right website or supporting system.</p></div><a href={requestHref}>Request Web Design & Development ↗</a></section>
