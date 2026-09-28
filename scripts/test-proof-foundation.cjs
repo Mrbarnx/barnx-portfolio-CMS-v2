@@ -28,12 +28,16 @@ async function main() {
   const { impactLines } = load('lib/cms/impactText.ts');
   assert.deepEqual(impactLines('Keep route, weight and date together.\r\n\n No payments. '), ['Keep route, weight and date together.', 'No payments.']);
   assert.deepEqual(impactLines(null), []);
-  assert.equal(load('data/web-capabilities.ts').webCapabilities.length, 8);
+  const webProofs = load('data/web-capabilities.ts');
+  assert.equal(webProofs.webCapabilities.length, 8);
+  assert.equal(webProofs.webCapabilityProofs.length, 8);
+  assert.equal(new Set(webProofs.webCapabilityProofs.map((item) => item.projectSlug)).size, 8, 'Every web capability has one distinct proof');
   const permanent = load('data/permanent-projects.ts').permanentProjects;
   const exclusiveTypes = new Set(['public_build', 'client_work', 'private_project', 'template']);
   assert.ok(permanent.every((project) => exclusiveTypes.has(project.projectType)), 'Every permanent project has one exclusive classification');
   assert.ok(permanent.filter((project) => project.projectType === 'public_build').every((project) => project.github), 'Every Public Build exposes source code');
   assert.ok(['greenlane-logistics-proof','dispatch-now-lagos','carepath-clinic-booking','formhaus-furniture-catalogue','northstar-digital-storefront','adaeze-okoro-architect-portfolio','havenly-property-lead-flow','neatflow-cleaning-automation'].every((slug) => permanent.find((project) => project.slug === slug)?.projectType === 'private_project'), 'Independent web proofs remain Case Studies');
+  assert.ok(webProofs.webCapabilityProofs.every(({ projectSlug }) => permanent.some(({ slug, live }) => slug === projectSlug && live)), 'Every web capability links to a live permanent project');
   const evidence = [
     { label: 'Live demo', type: 'live', href: 'https://example.com/demo', approvedForPublic: true },
     { label: 'Screenshot', type: 'image', asset: 'https://example.com/proof.png', alt: 'A structured enquiry', approvedForPublic: true },
