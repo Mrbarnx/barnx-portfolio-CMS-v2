@@ -22,7 +22,7 @@ export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> 
       const { data: media } = await db.from('media_assets').select('id,storage_path,alt_text,mime_type').in('id', mediaIds).eq('is_public', true);
       for (const asset of media ?? []) assets.set(asset.id, asset);
     }
-    return stories.map((row) => ({
+    const cmsStories = stories.map((row) => ({
       slug: row.slug, title: row.title, summary: row.summary, businessContext: row.business_context,
       originalRequest: row.original_request, discoveredProblem: row.discovered_problem, recommendation: row.recommendation,
       solution: row.solution, systemFlow: row.system_flow, decisions: row.decisions, capabilityEnabled: row.capability_enabled,
@@ -37,6 +37,7 @@ export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> 
           alt: image?.alt_text || item.label, approvedForPublic: true };
       }),
     })) as ImpactStory[];
+    return [...cmsStories, ...publicImpactStories.filter((fallback) => !cmsStories.some((story) => story.slug === fallback.slug))];
   } catch { return publicImpactStories; }
 });
 
