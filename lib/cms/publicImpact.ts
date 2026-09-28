@@ -23,6 +23,7 @@ export const getPublishedImpactStories = cache(async (): Promise<ImpactStory[]> 
       for (const asset of media ?? []) assets.set(asset.id, asset);
     }
     const cmsStories = stories.map((row) => ({
+      projectSlug: publicImpactStories.find((story) => story.slug === row.slug)?.projectSlug,
       slug: row.slug, title: row.title, summary: row.summary, businessContext: row.business_context,
       originalRequest: row.original_request, discoveredProblem: row.discovered_problem, recommendation: row.recommendation,
       solution: row.solution, systemFlow: row.system_flow, decisions: row.decisions, capabilityEnabled: row.capability_enabled,

@@ -21,10 +21,10 @@ function load(path, mocks = {}) {
 
 async function main() {
   const impact = load('data/impact.ts');
-  assert.deepEqual(impact.impactFilters.map((x) => x.label), ['All', 'Client Work', 'Company Work', 'Public Builds', 'Open Source']);
-  const records = [{ workType: 'public_build' }, { workType: 'client_work' }, { workType: 'independent_case_study' }];
-  assert.equal(impact.filterImpactStories(records, 'all').length, 3, 'Legacy stories remain visible in All');
-  assert.deepEqual(impact.filterImpactStories(records, 'public_build'), [records[0]], 'No automatic legacy reclassification');
+  assert.deepEqual(impact.impactFilters.map((x) => x.label), ['All', 'Client Work', 'Company Work', 'Public Builds']);
+  const records = [{ workType: 'public_build' }, { workType: 'open_source' }, { workType: 'client_work' }, { workType: 'independent_case_study' }];
+  assert.equal(impact.filterImpactStories(records, 'all').length, 4, 'Legacy stories remain visible in All');
+  assert.deepEqual(impact.filterImpactStories(records, 'public_build'), [records[0], records[1]], 'Open-source work is grouped under Public Builds');
   const { impactLines } = load('lib/cms/impactText.ts');
   assert.deepEqual(impactLines('Keep route, weight and date together.\r\n\n No payments. '), ['Keep route, weight and date together.', 'No payments.']);
   assert.deepEqual(impactLines(null), []);
@@ -73,8 +73,9 @@ async function main() {
     '@/lib/admin/media': { mediaPublicUrl: (url, path) => `${url}/${path}` },
   });
   const loaded = await loader.getPublishedImpactStories();
-  assert.equal(loaded.length, 2);
+  assert.equal(loaded.length, 3);
   assert.ok(loaded.some((story) => story.slug === 'greenlane-structured-delivery-requests'));
+  assert.ok(loaded.some((story) => story.slug === 'openlink-own-your-digital-identity'));
   assert.ok(queries.some(([table, key, value]) => table === 'media_assets' && key === 'is_public' && value === true));
   assert.deepEqual(impact.getPublicImpactEvidence(loaded[0]).map((item) => item.asset), ['https://example.com/proof/public.png']);
   assert.doesNotMatch(JSON.stringify(loaded), /private\/hidden/);

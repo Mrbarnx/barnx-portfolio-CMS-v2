@@ -21,7 +21,7 @@ export default async function ProjectDetail({params}:{params:Promise<{slug:strin
   return <main className="page caseStudy">
     <Link className="back" href="/projects">← All projects</Link>
     <section className="caseHero">
-      <span className="eyebrow">{p.category} · Case Study</span>
+      <span className="eyebrow">{p.category} · {p.openSource?'Public Build':'Case Study'}</span>
       <h1>{p.title}</h1><p>{p.overview}</p>
       <div className="caseLinks">
         {p.interactivePreview&&p.live?<a href="#interactive-preview">Try the experience ↓</a>:null}
@@ -29,10 +29,12 @@ export default async function ProjectDetail({params}:{params:Promise<{slug:strin
         {p.impactSlug?<Link href={`/impact/${p.impactSlug}`}>Read Impact story →</Link>:null}
         {p.github?<a href={p.github} target="_blank" rel="noreferrer">GitHub ↗</a>:null}
       </div>
-      {p.projectType==='public_build'?<p className="caseDisclosure">Independent case study · Designed and built by Barnx · No client or measured outcome is implied.</p>:null}
+      {p.openSource
+        ? <p className="caseDisclosure">Open-source public build · The working product and source repository are publicly available.</p>
+        : <p className="caseDisclosure">Independent case study · Designed and built by Barnx · No client or measured outcome is implied.</p>}
     </section>
 
-    {p.interactivePreview&&p.live?<section className="caseInteractive" id="interactive-preview"><div className="caseInteractiveHead"><div><span className="eyebrow">INTERACTIVE EXPERIENCE</span><h2>Use the product without leaving the case study.</h2></div><p>Complete the core customer journey directly inside this page.</p></div><div className="caseInteractiveFrame"><iframe src={p.live} title={`${p.title} interactive experience`} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer"/></div></section>:<ProjectMediaViewer images={images} video={p.video} projectTitle={p.title} fallbackTitle={p.display} fallbackSubtitle={p.visualSubtitle} tone={p.tone}/>} 
+    {p.interactivePreview&&p.live?<section className="caseInteractive" id="interactive-preview"><div className="caseInteractiveHead"><div><span className="eyebrow">INTERACTIVE EXPERIENCE</span><h2>Use the product without leaving the case study.</h2></div><p>Complete the core customer journey directly inside this page.</p></div><div className="caseInteractiveFrame"><iframe src={p.live} title={`${p.title} interactive experience`} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer"/></div></section>:<ProjectMediaViewer images={images} video={p.video} projectTitle={p.title} fallbackTitle={p.display} fallbackSubtitle={p.visualSubtitle} tone={p.tone}/>}
 
     <section className="caseColumns"><div><span className="eyebrow">BUSINESS PROBLEM</span><h2>{p.problem}</h2></div><div><span className="eyebrow">DESIRED OUTCOME</span><p>{p.solution}</p></div></section>
     <section className="caseSection"><span className="eyebrow">THE SYSTEM</span><div className="featureGrid">{p.features.map((f,index)=><article key={f}><span>{String(index+1).padStart(2,'0')}</span><p>{f}</p></article>)}</div></section>

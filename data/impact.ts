@@ -23,6 +23,7 @@ export type ImpactEvidenceLevel = 'measured' | 'client_reported' | 'enabled' | '
 export type ImpactStatus = 'draft' | 'in_development' | 'completed' | 'archived';
 
 export type ImpactStory = {
+  projectSlug?: string;
   slug: string;
   title: string;
   summary: string;
@@ -56,26 +57,53 @@ export type ImpactStory = {
 // Add a story only when the facts and public evidence are ready.
 // The public listing and detail route intentionally ignore unpublished entries.
 export const impactStories: ImpactStory[] = [{
+  projectSlug: 'greenlane-logistics-proof',
   slug: 'greenlane-structured-delivery-requests',
   title: 'From open-ended delivery messages to structured requests',
   summary: 'A logistics website concept showing how a guided quote flow can collect the details a delivery business needs before follow-up.',
   businessContext: 'Logistics businesses that receive enquiries through Instagram or WhatsApp may need to collect the same delivery details repeatedly before they can review a request.',
-  originalRequest: 'Create a small, polished public build that proves how web design and development can solve a recognisable logistics enquiry problem without attempting to build a full dispatch platform.',
+  originalRequest: 'Create a small, polished independent case study that proves how web design and development can solve a recognisable logistics enquiry problem without attempting to build a full dispatch platform.',
   discoveredProblem: 'An open chat starts with little structure. Pickup, destination, timing, package and customer details can arrive across several messages, making the handoff harder to review.',
   recommendation: 'Replace the first round of explanation with a guided request flow while keeping human follow-up for pricing and delivery confirmation.',
-  solution: 'Greenlane combines a service website with a four-step delivery request, review screen, confirmation reference and simulated business request view.',
+  solution: 'Greenlane combines a service website with a four-step delivery request, review screen, confirmation reference and structured business request view.',
   systemFlow: ['Customer understands the service', 'Customer submits delivery details', 'Information becomes one structured request', 'Business reviews the request', 'Human follow-up continues'],
-  decisions: ['Keep quoting human-led instead of inventing instant pricing', 'Ask only for information needed to review the request', 'Show a review step before submission', 'Use an explicit demo confirmation instead of pretending to contact a real business', 'Include a simulated business view to prove the handoff'],
+  decisions: ['Keep quoting human-led instead of inventing instant pricing', 'Ask only for information needed to review the request', 'Show a review step before submission', 'Use an explicit confirmation instead of pretending to contact a real business', 'Include a structured business view to prove the handoff'],
   capabilityEnabled: 'Business website, service request flow and structured lead capture',
   outcome: 'The working concept completes the demonstrated customer-to-business flow. It proves the interaction and information structure; it does not claim measured conversion, revenue or time-saving results.',
   outcomeEvidence: 'enabled',
-  workType: 'public_build',
+  workType: 'independent_case_study',
   visibility: 'public',
   status: 'completed',
   technologies: ['HTML', 'CSS', 'JavaScript', 'Responsive UI'],
   evidence: [{ type: 'live', label: 'Open the working Greenlane demo', href: 'https://greenlane-logistics-proof.usajames017.chatgpt.site', approvedForPublic: true }],
   lessons: ['Showing the business-side handoff makes the value clearer than stopping at a success message.', 'The proof is stronger when it avoids unverified metrics and demonstrates only what has actually been built.'],
   nextImprovements: ['Connect submissions to a real CRM or notification workflow when a business requires it.', 'Test the form with logistics operators and customers before making usability or performance claims.'],
+  published: true,
+},{
+  slug: 'openlink-own-your-digital-identity',
+  projectSlug: 'open-link-hub',
+  title: 'Giving creators ownership of their link-in-bio presence',
+  summary: 'An open-source, self-hostable link hub that combines a public profile with secure content management and portable deployment.',
+  businessContext: 'Creators and professionals often depend on hosted link-in-bio platforms to organise their public destinations. Those services can limit control over branding, hosting and future product changes.',
+  originalRequest: 'Build a credible open-source alternative that demonstrates the complete public-profile and management workflow without copying a commercial platform feature for feature.',
+  discoveredProblem: 'A simple list of links is easy to publish, but ownership also requires a safe way to manage content, a dependable public profile and deployment architecture the owner can control.',
+  recommendation: 'Create a focused self-hostable product with public profiles, authenticated management and portable deployment rather than expanding into analytics, payments or social-network features.',
+  solution: 'OpenLink Hub provides a public link page, secure administration, image uploads and a Cloudflare-based deployment path in one open-source application.',
+  systemFlow: ['Owner signs in', 'Owner manages profile and links', 'Media and content are stored', 'Public profile renders the current content', 'Visitors open the relevant destination'],
+  decisions: ['Keep the public experience fast and focused', 'Separate public reading from authenticated content management', 'Make the repository public so the implementation can be inspected and self-hosted', 'Use portable infrastructure instead of tying the product to a closed website builder'],
+  capabilityEnabled: 'An inspectable, self-hostable public identity page with controlled content management',
+  outcome: 'The deployed application and public repository verify the public-profile, management and deployment architecture. They do not establish adoption, revenue or conversion improvements.',
+  outcomeEvidence: 'enabled',
+  workType: 'public_build',
+  visibility: 'public',
+  status: 'completed',
+  technologies: ['Next.js', 'TypeScript', 'Cloudflare Workers', 'Drizzle'],
+  evidence: [
+    {type:'live',label:'Use the deployed OpenLink Hub',href:'https://open-link-hub.usajames017.workers.dev',approvedForPublic:true},
+    {type:'repository',label:'Inspect the open-source repository',href:'https://github.com/Mrbarnx/Open-Link-Hub',approvedForPublic:true},
+  ],
+  lessons: ['Open source is stronger proof when the deployed product and implementation can both be inspected.', 'A narrow ownership promise creates a clearer product than adding unrelated creator-tool features.'],
+  nextImprovements: ['Add documented deployment templates for more hosting providers.', 'Validate onboarding and management usability with independent users before making usability claims.'],
   published: true,
 }];
 
@@ -85,7 +113,7 @@ export const impactWorkTypeLabels: Record<ImpactWorkType, string> = {
   client_work: 'Client Work',
   company_work: 'Company Work',
   independent_case_study: 'Independent Case Study',
-  open_source: 'Open Source',
+  open_source: 'Public Build',
   public_build: 'Public Build',
   free_community_tool: 'Free Community Tool',
 };
@@ -103,13 +131,14 @@ export const impactFilters = [
   { label: 'Client Work', value: 'client_work' },
   { label: 'Company Work', value: 'company_work' },
   { label: 'Public Builds', value: 'public_build' },
-  { label: 'Open Source', value: 'open_source' },
 ] as const;
 
 export type ImpactFilter = typeof impactFilters[number]['value'];
 
 export function filterImpactStories(stories: ImpactStory[], filter: ImpactFilter) {
-  return filter === 'all' ? stories : stories.filter((story) => story.workType === filter);
+  if(filter==='all')return stories;
+  if(filter==='public_build')return stories.filter((story)=>['public_build','open_source','free_community_tool'].includes(story.workType));
+  return stories.filter((story) => story.workType === filter);
 }
 
 export function publicEvidenceUrl(value?: string) {
