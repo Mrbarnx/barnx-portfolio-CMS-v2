@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { ImpactArchive } from './ImpactArchive';
 import { getPublishedImpactStories } from '@/lib/cms/publicImpact';
 import styles from './impact.module.css';
@@ -26,6 +27,14 @@ export default async function ImpactPage() {
         <p>
           A closer look at how I investigate business problems, choose the right technical response and document the proof behind the work.
         </p>
+      </section>
+
+      <section className={styles.serviceBridge} aria-label="Explore Barnx services">
+        <div>
+          <span>SERVICES</span>
+          <p>These stories show the thinking and evidence behind the work. Explore the services Barnx offers to see how similar business problems can be approached.</p>
+        </div>
+        <Link href="/services">Explore services →</Link>
       </section>
 
       <section className={styles.archive}>
