@@ -30,6 +30,7 @@ function typeLabel(type: ProjectType) {
 
 export function ProjectCard({ project }: { project: ArchiveProject }) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewExpanded, setPreviewExpanded] = useState(false);
   const [previewSize, setPreviewSize] = useState<'phone'|'tablet'|'desktop'>('desktop');
   const closeButton = useRef<HTMLButtonElement>(null);
   const type = project.projectType ?? 'public_build';
@@ -37,6 +38,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
   const visualHref = project.caseStudyEnabled !== false ? caseHref : project.live ?? project.buyUrl ?? project.github;
   const openPreview = () => {
     if (!project.live) return;
+    setPreviewExpanded(false);
     setPreviewOpen(true);
   };
   const visual = <div className={`projectVisual ${project.tone}${project.coverImage ? ' hasCover' : ''}`}>
@@ -48,12 +50,16 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
 
   useEffect(() => {
     if (!previewOpen) return;
-    const onKeyDown = (event: KeyboardEvent) => event.key === 'Escape' && setPreviewOpen(false);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (previewExpanded) setPreviewExpanded(false);
+      else setPreviewOpen(false);
+    };
     document.addEventListener('keydown', onKeyDown);
     document.body.classList.add('projectPreviewOpen');
     closeButton.current?.focus();
     return () => { document.removeEventListener('keydown', onKeyDown); document.body.classList.remove('projectPreviewOpen'); };
-  }, [previewOpen]);
+  }, [previewExpanded, previewOpen]);
 
   return <motion.div className="projectCardWrap" layout initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} exit={{opacity:0,y:18,scale:.98}} transition={{duration:.42,ease:[.22,1,.36,1]}}>
     <motion.article className="projectCard" whileHover={{y:-8,rotateX:1.2,rotateY:-1.2}} transition={{duration:.25}}>
@@ -81,9 +87,9 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
       </div>
     </motion.article>
     <ProjectStar id={project.slug}/>
-    {previewOpen && project.live ? <div className="projectPreviewBackdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setPreviewOpen(false)}>
+    {previewOpen && project.live ? <div className={`projectPreviewBackdrop${previewExpanded ? ' isFullscreen' : ''}`} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) { setPreviewExpanded(false); setPreviewOpen(false); } }}>
       <section className="projectPreviewDialog" role="dialog" aria-modal="true" aria-labelledby={`${project.slug}-preview-title`}>
-        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><div className="previewDialogTools"><div className="previewSizeControls" aria-label="Preview size">{(['phone','tablet','desktop'] as const).map(size=><button type="button" className={previewSize===size?'active':''} onClick={()=>setPreviewSize(size)} aria-pressed={previewSize===size} key={size}>{size}</button>)}</div><button ref={closeButton} type="button" onClick={() => setPreviewOpen(false)} aria-label="Close interactive preview">Close ×</button></div></header>
+        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><div className="previewDialogTools"><div className="previewSizeControls" aria-label="Preview size">{(['phone','tablet','desktop'] as const).map(size=><button type="button" className={previewSize===size?'active':''} onClick={()=>setPreviewSize(size)} aria-pressed={previewSize===size} key={size}>{size}</button>)}</div><button className="previewExpand" type="button" onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded?'Exit full screen':'Full screen'}</button><button className="previewClose" ref={closeButton} type="button" onClick={() => { setPreviewExpanded(false); setPreviewOpen(false); }} aria-label="Close interactive preview">×</button></div></header>
         <div className={`responsivePreviewStage ${previewSize}`}><iframe title={`${project.title} interactive preview`} src={project.live} sandbox="allow-forms allow-scripts allow-same-origin allow-popups" referrerPolicy="no-referrer" /></div>
       </section>
     </div> : null}
