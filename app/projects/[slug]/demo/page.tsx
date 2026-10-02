@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPublishedProject } from '@/lib/cms/publicProjects';
+import { ResponsiveProjectPreview } from '@/components/ResponsiveProjectPreview';
 
 export const dynamic='force-dynamic';
 
@@ -18,7 +19,7 @@ export default async function DemoStory({params}:{params:Promise<{slug:string}>}
       <article><span>03 · WORKING PROOF</span><h2>{p.features.slice(0,3).join(' · ')}</h2></article>
       <article><span>04 · BUSINESS VALUE</span><h2>{p.lessons}</h2></article>
     </section>
-    {p.interactivePreview&&p.live?<section className="demoStoryProduct"><header><span className="eyebrow">TRY THE EXPERIENCE</span><h2>The product is the proof.</h2></header><iframe src={p.live} title={`${p.title} interactive experience`} sandbox="allow-forms allow-scripts allow-same-origin" referrerPolicy="no-referrer"/></section>:null}
+    {p.interactivePreview&&p.live?<section className="demoStoryProduct"><header><span className="eyebrow">TRY THE EXPERIENCE</span><h2>The product is the proof.</h2></header><div className="demoStoryPreview"><ResponsiveProjectPreview live={p.live} title={p.title}/></div></section>:null}
     <section className="demoStoryCta"><span className="eyebrow light">A SIMILAR PROCESS IN YOUR BUSINESS?</span><h2>Let’s turn the friction into a focused system.</h2><Link href="/quote">Request a solution →</Link></section>
   </main>;
 }
