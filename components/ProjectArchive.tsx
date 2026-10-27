@@ -7,11 +7,12 @@ import type { Project, ProjectType } from '@/data/content';
 import { ProjectStar } from '@/components/ProjectStar';
 import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-projects';
 
-type Filter = 'all' | ProjectType | 'custom_software' | 'web_design' | 'ai_automation';
+type Filter = 'all' | ProjectType | 'custom_software' | 'web_design' | 'workflow_automation' | 'ai_automation';
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
   ['custom_software', 'Custom Software'],
   ['web_design', 'Web Design & Development'],
+  ['workflow_automation', 'Workflow Automation'],
   ['ai_automation', 'AI & Automation'],
   ['public_build', 'Public Builds'],
   ['private_project', 'Case Studies'],
@@ -19,10 +20,11 @@ const filters: Array<[Filter, string]> = [
 ];
 
 const filterIntroductions: Record<Filter, string> = {
-  all: 'Explore custom software, web design, AI automation, public builds and detailed case studies. Each project shows the proof that is safe and useful to share.',
-  custom_software: 'Operational products, dashboards and workflow systems designed around real business processes.',
+  all: 'Explore custom software, web design, workflow automation, AI systems, public builds and detailed case studies. Each project shows the proof that is safe and useful to share.',
+  custom_software: 'Operational products, dashboards and purpose-built systems designed around real business processes.',
   web_design: 'Responsive websites and customer journeys designed to explain, persuade and turn interest into a clear next step.',
-  ai_automation: 'AI-assisted products and automated workflows with visible behavior, boundaries and human control.',
+  workflow_automation: 'Connected request and follow-up workflows that reduce repetitive work without claiming AI where none is used.',
+  ai_automation: 'AI-assisted products with visible behavior, boundaries and human control.',
   public_build: 'Open-source products shared publicly so people can use the working software, inspect the implementation and build on the ideas.',
   client_work: 'Selected projects completed for clients who have permitted me to showcase the work, my contribution and the resulting solution.',
   private_project: 'Independent concept solutions showing the problem, product decisions, working flow, evidence and honest limitations.',
@@ -112,6 +114,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
     if (active === 'all') return true;
     if (active === 'custom_software') return project.category === 'Custom Software';
     if (active === 'web_design') return project.category === 'Web Design & Development';
+    if (active === 'workflow_automation') return project.category === 'Workflow Automation';
     if (active === 'ai_automation') return project.category === 'AI & Automation';
     return (project.projectType ?? 'private_project') === active;
   });
