@@ -2,12 +2,24 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Project, ProjectType } from '@/data/content';
 import { ProjectStar } from '@/components/ProjectStar';
 import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-projects';
 
 type Filter = 'all' | ProjectType | 'custom_software' | 'web_design' | 'workflow_automation' | 'ai_automation';
+const filterSlugs: Record<Filter, string | null> = {
+  all: null,
+  custom_software: 'custom-software',
+  web_design: 'web-design',
+  workflow_automation: 'workflow-automation',
+  ai_automation: 'ai-automation',
+  public_build: 'public-builds',
+  private_project: 'case-studies',
+  client_work: 'client-work',
+  template: 'templates',
+};
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
   ['custom_software', 'Custom Software'],
@@ -108,7 +120,11 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
 }
 
 export function ProjectArchive({ projects }: { projects: Project[] }) {
-  const [active, setActive] = useState<Filter>('all');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const requestedCategory = searchParams.get('category');
+  const active = (Object.entries(filterSlugs).find(([, slug]) => slug === requestedCategory)?.[0] as Filter | undefined) ?? 'all';
   const allProjects = mergePermanentProjects(projects);
   const visible = allProjects.filter(project => {
     if (active === 'all') return true;
@@ -119,12 +135,21 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
     return (project.projectType ?? 'private_project') === active;
   });
 
+  const selectFilter = (filter: Filter) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const slug = filterSlugs[filter];
+    if (slug) params.set('category', slug);
+    else params.delete('category');
+    const query = params.toString();
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
   return <>
     <AnimatePresence mode="wait" initial={false}>
       <motion.p className="projectFilterIntro" key={active} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-6}} transition={{duration:.22}} aria-live="polite">{filterIntroductions[active]}</motion.p>
     </AnimatePresence>
     <nav className="projectFilters" aria-label="Filter projects">
-      {filters.map(([value, label]) => <button className={active === value ? 'active' : ''} type="button" onClick={() => setActive(value)} aria-pressed={active === value} key={value}>{label}</button>)}
+      {filters.map(([value, label]) => <button className={active === value ? 'active' : ''} type="button" onClick={() => selectFilter(value)} aria-pressed={active === value} key={value}>{label}</button>)}
     </nav>
     {visible.length
       ? <motion.section className="projectGrid" layout aria-live="polite"><AnimatePresence mode="popLayout">{visible.map(project => <ProjectCard project={project} key={project.slug}/>)}</AnimatePresence></motion.section>
