@@ -5,6 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 type Size = 'phone' | 'tablet' | 'desktop';
 const widths: Record<Size, number> = { phone: 390, tablet: 820, desktop: 1440 };
 
+function BackIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"/><path d="M9 12h10"/></svg>;
+}
+
 export function ResponsiveProjectPreview({ live, title }: { live: string; title: string }) {
   const [size, setSize] = useState<Size>('desktop');
   const [open, setOpen] = useState(false);
@@ -52,18 +56,15 @@ export function ResponsiveProjectPreview({ live, title }: { live: string; title:
     <button ref={launchButton} type="button" onClick={() => setOpen(true)}>View interactive preview</button>
   </div>;
 
-  return <div className={`responsivePreview isOpen${expanded ? ' isExpanded' : ''}`} role={expanded || mobile ? 'dialog' : undefined} aria-modal={expanded || mobile ? true : undefined} aria-label={`${title} interactive preview`}>
+  return <div className={`responsivePreview isOpen${expanded ? ' isExpanded' : ''}`} role="dialog" aria-modal="true" aria-label={`${title} interactive preview`}>
     <div className="responsivePreviewToolbar">
-      <div>
-        <span>INTERACTIVE PREVIEW</span>
-        <strong>{title}</strong>
-      </div>
+      <button className="previewBack" ref={closeButton} type="button" onClick={close} aria-label="Back to project details"><BackIcon/><span>Back</span></button>
+      <strong className="previewTitle">{title}</strong>
       <div className="responsivePreviewActions">
         <div className="previewSizeControls" aria-label="Preview size">
           {(['phone','tablet','desktop'] as Size[]).map(item=><button type="button" className={size===item?'active':''} onClick={()=>setSize(item)} aria-pressed={size===item} key={item}>{item}</button>)}
         </div>
         <button className="previewExpand" type="button" onClick={() => setExpanded(value => !value)}>{expanded ? 'Exit full screen' : 'Full screen'}</button>
-        <button className="previewClose" ref={closeButton} type="button" onClick={close} aria-label="Close interactive preview">×</button>
       </div>
     </div>
     <div className={`responsivePreviewStage ${size}`}>
