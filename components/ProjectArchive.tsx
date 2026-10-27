@@ -7,22 +7,31 @@ import type { Project, ProjectType } from '@/data/content';
 import { ProjectStar } from '@/components/ProjectStar';
 import { mergePermanentProjects, type ArchiveProject } from '@/data/permanent-projects';
 
-type Filter = 'all' | ProjectType;
+type Filter = 'all' | ProjectType | 'custom_software' | 'web_design' | 'ai_automation';
 const filters: Array<[Filter, string]> = [
   ['all', 'All'],
+  ['custom_software', 'Custom Software'],
+  ['web_design', 'Web Design & Development'],
+  ['ai_automation', 'AI & Automation'],
   ['public_build', 'Public Builds'],
   ['private_project', 'Case Studies'],
   ['client_work', 'Client Work'],
-  ['template', 'Templates'],
 ];
 
 const filterIntroductions: Record<Filter, string> = {
-  all: 'Explore public builds, client work, detailed case studies and templates. Each project shows the proof that is safe and useful to share.',
+  all: 'Explore custom software, web design, AI automation, public builds and detailed case studies. Each project shows the proof that is safe and useful to share.',
+  custom_software: 'Operational products, dashboards and workflow systems designed around real business processes.',
+  web_design: 'Responsive websites and customer journeys designed to explain, persuade and turn interest into a clear next step.',
+  ai_automation: 'AI-assisted products and automated workflows with visible behavior, boundaries and human control.',
   public_build: 'Open-source products shared publicly so people can use the working software, inspect the implementation and build on the ideas.',
   client_work: 'Selected projects completed for clients who have permitted me to showcase the work, my contribution and the resulting solution.',
   private_project: 'Independent concept solutions showing the problem, product decisions, working flow, evidence and honest limitations.',
-  template: 'Polished, reusable website experiences for businesses and creators who want a strong starting point without building from scratch.',
+  template: 'Responsive web design systems for businesses and creators who need a strong, reusable starting point.',
 };
+
+function BackIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 8.5 12l7 7"/><path d="M9 12h10"/></svg>;
+}
 
 function typeLabel(type: ProjectType) {
   return { public_build: 'Public Build', client_work: 'Client Work', private_project: 'Case Study', template: 'Template' }[type];
@@ -89,7 +98,7 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
     <ProjectStar id={project.slug}/>
     {previewOpen && project.live ? <div className={`projectPreviewBackdrop${previewExpanded ? ' isFullscreen' : ''}`} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) { setPreviewExpanded(false); setPreviewOpen(false); } }}>
       <section className="projectPreviewDialog" role="dialog" aria-modal="true" aria-labelledby={`${project.slug}-preview-title`}>
-        <header><div><span>{project.openSource?'Interactive public build':'Interactive project preview'}</span><strong id={`${project.slug}-preview-title`}>{project.title}</strong></div><div className="previewDialogTools"><div className="previewSizeControls" aria-label="Preview size">{(['phone','tablet','desktop'] as const).map(size=><button type="button" className={previewSize===size?'active':''} onClick={()=>setPreviewSize(size)} aria-pressed={previewSize===size} key={size}>{size}</button>)}</div><button className="previewExpand" type="button" onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded?'Exit full screen':'Full screen'}</button><button className="previewClose" ref={closeButton} type="button" onClick={() => { setPreviewExpanded(false); setPreviewOpen(false); }} aria-label="Close interactive preview">×</button></div></header>
+        <header><button className="previewBack" ref={closeButton} type="button" onClick={() => { setPreviewExpanded(false); setPreviewOpen(false); }} aria-label="Back to projects"><BackIcon/><span>Back</span></button><strong className="previewTitle" id={`${project.slug}-preview-title`}>{project.title}</strong><div className="previewDialogTools"><div className="previewSizeControls" aria-label="Preview size">{(['phone','tablet','desktop'] as const).map(size=><button type="button" className={previewSize===size?'active':''} onClick={()=>setPreviewSize(size)} aria-pressed={previewSize===size} key={size}>{size}</button>)}</div><button className="previewExpand" type="button" onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded?'Exit full screen':'Full screen'}</button></div></header>
         <div className={`responsivePreviewStage ${previewSize}`}><iframe title={`${project.title} interactive preview`} src={project.live} sandbox="allow-forms allow-scripts allow-same-origin allow-popups" referrerPolicy="no-referrer" /></div>
       </section>
     </div> : null}
@@ -99,8 +108,13 @@ export function ProjectCard({ project }: { project: ArchiveProject }) {
 export function ProjectArchive({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Filter>('all');
   const allProjects = mergePermanentProjects(projects);
-  const visible = allProjects.filter(project => active === 'all'
-    || (project.projectType ?? 'private_project') === active);
+  const visible = allProjects.filter(project => {
+    if (active === 'all') return true;
+    if (active === 'custom_software') return project.category === 'Custom Software';
+    if (active === 'web_design') return project.category === 'Web Design & Development';
+    if (active === 'ai_automation') return project.category === 'AI & Automation';
+    return (project.projectType ?? 'private_project') === active;
+  });
 
   return <>
     <AnimatePresence mode="wait" initial={false}>
